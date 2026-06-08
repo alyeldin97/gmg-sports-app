@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter gen-l10n *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(mkdir -p assets/images)",
+      "Bash(cp /Users/alyeldinmuhammad/Desktop/gmg/logo.png assets/images/logo.png)",
+      "Bash(cp /Users/alyeldinmuhammad/Desktop/gmg/l10n.yaml l10n.yaml)",
+      "Bash(gh auth *)",
+      "Bash(git config *)",
+      "Bash(gh api *)",
+      "Bash(git init *)",
+      "Bash(git commit -q -m ' *)"
+    ],
+    "additionalDirectories": [
+      "/Users/alyeldinmuhammad/Desktop/gmg_dashboard"
+    ]
+  }
+}
