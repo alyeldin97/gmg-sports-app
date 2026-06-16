@@ -1,0 +1,12 @@
+[build]
+  command   = "chmod +x ./build.sh && ./build.sh"
+  publish   = "build/web"
+
+[build.environment]
+  FLUTTER_CHANNEL = "stable"
+
+# SPA fallback — all routes serve index.html so Flutter's router works
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
