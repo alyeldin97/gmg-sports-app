@@ -128,7 +128,7 @@ class _CollectionsRail extends StatelessWidget {
   Widget build(BuildContext context) {
     final isArabic = context.read<LocaleCubit>().isArabic;
     return SizedBox(
-      height: 120.h,
+      height: 130.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 16.w),

@@ -31,10 +31,13 @@ class OrderDetailsScreen extends StatelessWidget {
         ),
         body: BlocBuilder<OrdersCubit, OrdersState>(
           builder: (context, state) {
-            if (state.status == OrdersStatus.loading || state.selected == null) {
-              if (state.status == OrdersStatus.failure) {
-                return EmptyState(icon: Icons.error_outline, title: context.l10n.somethingWrong);
-              }
+            if (state.status == OrdersStatus.loading || state.status == OrdersStatus.initial) {
+              return const Center(child: CircularProgressIndicator(color: AppColors.primaryDark));
+            }
+            if (state.status == OrdersStatus.failure) {
+              return EmptyState(icon: Icons.error_outline, title: context.l10n.somethingWrong);
+            }
+            if (state.selected == null) {
               return const Center(child: CircularProgressIndicator(color: AppColors.primaryDark));
             }
             final order = state.selected!;
