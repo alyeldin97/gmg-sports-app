@@ -1,3 +1,6 @@
+# Netlify local state
+.netlify/
+
 # Miscellaneous
 *.class
 *.log
