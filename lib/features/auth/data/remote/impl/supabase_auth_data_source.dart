@@ -11,11 +11,23 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
   @override
   Future<AppUser> signIn({required String email, required String password}) async {
-    AppLogger.net(_tag, 'signIn', email);
-    final response = await _client.auth.signInWithPassword(email: email, password: password);
-    final uid = response.user?.id;
-    if (uid == null) throw Exception('Sign-in failed');
-    return _fetchProfile(uid, response.user!.email ?? email);
+    AppLogger.net(_tag, 'signIn attempt', email);
+    try {
+      final response = await _client.auth.signInWithPassword(email: email, password: password);
+      AppLogger.d(_tag, 'signInWithPassword response: user=${response.user?.id}, session=${response.session != null}');
+
+      final uid = response.user?.id;
+      if (uid == null) {
+        AppLogger.e(_tag, 'signIn failed: response.user is null');
+        throw Exception('Sign-in failed');
+      }
+
+      AppLogger.i(_tag, 'auth ok uid=$uid, fetching profile...');
+      return await _fetchProfile(uid, response.user!.email ?? email);
+    } catch (e, st) {
+      AppLogger.e(_tag, 'signIn error', e, st);
+      rethrow;
+    }
   }
 
   @override
@@ -76,7 +88,14 @@ class SupabaseAuthDataSource implements AuthDataSource {
       _client.auth.resetPasswordForEmail(email);
 
   Future<AppUser> _fetchProfile(String uid, String email) async {
-    final data = await _client.from('profiles').select().eq('id', uid).single();
-    return AppUser.fromJson({'id': uid, 'email': email, ...Map<String, dynamic>.from(data)});
+    AppLogger.net(_tag, 'fetchProfile from profiles uid=$uid');
+    try {
+      final data = await _client.from('profiles').select().eq('id', uid).single();
+      AppLogger.d(_tag, 'profiles row: $data');
+      return AppUser.fromJson({'id': uid, 'email': email, ...Map<String, dynamic>.from(data)});
+    } catch (e, st) {
+      AppLogger.e(_tag, 'fetchProfile failed uid=$uid', e, st);
+      rethrow;
+    }
   }
 }

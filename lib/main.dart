@@ -12,7 +12,9 @@ import 'core/utils/configurations.dart';
 import 'features/app_settings/presentation/cubits/app_settings_cubit.dart';
 import 'features/auth/presentation/cubits/auth_cubit.dart';
 import 'features/cart/presentation/cubits/cart_cubit.dart';
+import 'features/collections/presentation/cubits/collections_cubit.dart';
 import 'features/home/presentation/cubits/home_cubit.dart';
+import 'features/orders/presentation/cubits/orders_cubit.dart';
 import 'l10n/app_localizations.dart';
 import 'routes.dart';
 
@@ -44,6 +46,8 @@ class GmgApp extends StatelessWidget {
             BlocProvider<NavigationCubit>(create: (_) => di.navigationCubit),
             BlocProvider<HomeCubit>(create: (_) => di.homeCubit..load()),
             BlocProvider<AppSettingsCubit>(create: (_) => di.appSettingsCubit..load()),
+            BlocProvider<CollectionsCubit>(create: (_) => di.collectionsCubit..load()),
+            BlocProvider<OrdersCubit>(create: (_) => di.ordersCubit),
           ],
           child: BlocBuilder<LocaleCubit, Locale>(
             builder: (context, locale) {

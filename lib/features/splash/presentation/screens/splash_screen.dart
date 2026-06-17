@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/images.dart';
 import '../../../auth/presentation/cubits/auth_cubit.dart';
 import '../../../layout/presentation/screens/layout_screen.dart';
-import '../../../onboarding/presentation/screens/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String routeName = '/splash';
@@ -32,16 +30,13 @@ class _SplashScreenState extends State<SplashScreen> {
     ]);
     if (!mounted) return;
 
-    if (cubit.state.status == AuthStatus.authenticated) {
-      Navigator.of(context).pushReplacementNamed(LayoutScreen.routeName);
-      return;
+    // Web app: skip onboarding. Go straight into the app, browsing as a guest
+    // until the user signs in (checkout will prompt for sign-in when needed).
+    if (cubit.state.status != AuthStatus.authenticated) {
+      cubit.continueAsGuest();
     }
-    final prefs = await SharedPreferences.getInstance();
-    final seen = prefs.getBool('hasSeenOnboarding') ?? false;
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed(
-      seen ? OnboardingScreen.routeName : OnboardingScreen.routeName,
-    );
+    Navigator.of(context).pushReplacementNamed(LayoutScreen.routeName);
   }
 
   @override
