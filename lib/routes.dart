@@ -19,7 +19,7 @@ import 'features/profile/presentation/screens/edit_profile_screen.dart';
 import 'features/splash/presentation/screens/splash_screen.dart';
 
 class RouteGenerator {
-  static const String initialRoute = SplashScreen.routeName;
+  static const String initialRoute = LayoutScreen.routeName;
 
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
