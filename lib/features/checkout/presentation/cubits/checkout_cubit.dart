@@ -11,8 +11,8 @@ class CheckoutCubit extends Cubit<CheckoutState> {
   final OrdersRepository _repository;
   CheckoutCubit(this._repository) : super(const CheckoutState());
 
-  void setDeliveryDate(DateTime date) => emit(state.copyWith(deliveryDate: date));
-  void setPaymentMethod(String method) => emit(state.copyWith(paymentMethod: method));
+  void setDeliveryDate(DateTime date) => emit(state.copyWith(status: CheckoutStatus.initial, deliveryDate: date));
+  void setPaymentMethod(String method) => emit(state.copyWith(status: CheckoutStatus.initial, paymentMethod: method));
 
   Future<void> placeOrder({
     required List<CartItem> items,

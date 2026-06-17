@@ -200,6 +200,8 @@ create table if not exists public.order_status_history (
 create or replace function public.log_order_status()
 returns trigger
 language plpgsql
+security definer
+set search_path = public
 as $$
 begin
   if (tg_op = 'INSERT') or (new.status is distinct from old.status) then
