@@ -20,10 +20,10 @@ class AuthCubit extends Cubit<AuthState> {
       final user = await _repository.getCurrentUser();
       emit(user != null
           ? state.copyWith(status: AuthStatus.authenticated, user: user)
-          : state.copyWith(status: AuthStatus.unauthenticated));
+          : const AuthState(status: AuthStatus.guest));
     } catch (e, st) {
       AppLogger.e(_tag, 'checkCurrentUser failed', e, st);
-      emit(state.copyWith(status: AuthStatus.unauthenticated));
+      emit(const AuthState(status: AuthStatus.guest));
     }
   }
 
@@ -81,7 +81,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> signOut() async {
     await _repository.signOut();
-    emit(const AuthState(status: AuthStatus.unauthenticated));
+    emit(const AuthState(status: AuthStatus.guest));
   }
 
   String _parseError(Object e) {
