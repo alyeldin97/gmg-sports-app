@@ -54,6 +54,7 @@ class RouteGenerator {
           builder: (_) => MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => DependencyInjector().checkoutCubit),
+              BlocProvider(create: (_) => DependencyInjector().governoratesCubit),
               BlocProvider(create: (_) => DependencyInjector().addressCubit),
               BlocProvider(create: (_) => DependencyInjector().appSettingsCubit),
             ],

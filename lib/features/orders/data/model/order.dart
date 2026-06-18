@@ -119,6 +119,8 @@ class Order extends Equatable {
   final DateTime createdAt;
   final List<OrderItem> items;
   final List<OrderStatusEvent> history;
+  final String? guestEmail;
+  final String? governorateName;
 
   const Order({
     required this.id,
@@ -135,6 +137,8 @@ class Order extends Equatable {
     required this.createdAt,
     this.items = const [],
     this.history = const [],
+    this.guestEmail,
+    this.governorateName,
   });
 
   String get shortId => id.length >= 8 ? id.substring(0, 8).toUpperCase() : id.toUpperCase();
@@ -153,6 +157,8 @@ class Order extends Equatable {
         addressText: j['address_text'] as String? ?? '',
         notes: j['notes'] as String?,
         createdAt: DateTime.parse(j['created_at'] as String),
+        guestEmail: j['guest_email'] as String?,
+        governorateName: j['governorate_name'] as String?,
         items: (j['order_items'] as List<dynamic>? ?? [])
             .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))
             .toList(),
@@ -163,5 +169,5 @@ class Order extends Equatable {
       );
 
   @override
-  List<Object?> get props => [id, status, total];
+  List<Object?> get props => [id, status, total, guestEmail, governorateName];
 }

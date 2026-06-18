@@ -8,53 +8,55 @@ class SupabaseOrdersDataSource implements OrdersDataSource {
 
   static const _select = '*, order_items(*), order_status_history(*)';
 
-  String get _uid {
-    final id = _client.auth.currentUser?.id;
-    if (id == null) throw Exception('Not authenticated');
-    return id;
-  }
+  String? get _uid => _client.auth.currentUser?.id;
 
   @override
   Future<Order> createOrder({
     required Map<String, dynamic> orderData,
     required List<Map<String, dynamic>> items,
   }) async {
-    final inserted = await _client
-        .from('orders')
-        .insert({...orderData, 'user_id': _uid})
-        .select()
-        .single();
+    final uid = _uid;
+    final data = uid != null ? {...orderData, 'user_id': uid} : orderData;
+    final inserted =
+        await _client.from('orders').insert(data).select().single();
     final orderId = inserted['id'] as String;
     if (items.isNotEmpty) {
-      await _client.from('order_items').insert(
-            items.map((i) => {...i, 'order_id': orderId}).toList(),
-          );
+      await _client
+          .from('order_items')
+          .insert(items.map((i) => {...i, 'order_id': orderId}).toList());
     }
     return getOrderById(orderId);
   }
 
   @override
   Future<List<Order>> getMyOrders() async {
+    final uid = _uid;
+    if (uid == null) return [];
     final rows = await _client
         .from('orders')
         .select(_select)
-        .eq('user_id', _uid)
+        .eq('user_id', uid)
         .order('created_at', ascending: false);
-    return (rows as List).map((e) => Order.fromJson(e as Map<String, dynamic>)).toList();
+    return (rows as List)
+        .map((e) => Order.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   @override
   Future<Order> getOrderById(String id) async {
-    final row = await _client.from('orders').select(_select).eq('id', id).single();
+    final row =
+        await _client.from('orders').select(_select).eq('id', id).single();
     return Order.fromJson(row);
   }
 
   @override
   Future<void> cancelOrder(String id) async {
+    final uid = _uid;
+    if (uid == null) return;
     await _client
         .from('orders')
         .update({'status': 'cancelled'})
         .eq('id', id)
-        .eq('user_id', _uid);
+        .eq('user_id', uid);
   }
 }

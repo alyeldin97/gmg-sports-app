@@ -369,4 +369,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no => 'No';
+
+  @override
+  String get contactInfo => 'Contact Information';
+
+  @override
+  String get deliveryInfo => 'Delivery Information';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get governorate => 'Governorate';
+
+  @override
+  String get selectGovernorate => 'Select governorate';
+
+  @override
+  String get shippingCost => 'Shipping';
+
+  @override
+  String get shippingUnavailable => 'Shipping not available to this governorate';
+
+  @override
+  String get useSavedAddress => 'Use saved address';
+
+  @override
+  String get requiredField => 'Required';
+
+  @override
+  String get invalidEmail => 'Enter a valid email';
+
+  @override
+  String get shipping => 'Shipping';
+
+  @override
+  String deliveryIn(int days) => 'Delivery in $days day${days == 1 ? '' : 's'}';
 }

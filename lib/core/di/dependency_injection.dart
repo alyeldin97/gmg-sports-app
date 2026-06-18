@@ -17,7 +17,9 @@ import '../../features/auth/data/repo/auth_repository_impl.dart';
 import '../../features/auth/presentation/cubits/auth_cubit.dart';
 import '../../features/cart/data/local/cart_local_data_source.dart';
 import '../../features/cart/presentation/cubits/cart_cubit.dart';
+import '../../features/checkout/data/repo/governorates_repository.dart';
 import '../../features/checkout/presentation/cubits/checkout_cubit.dart';
+import '../../features/checkout/presentation/cubits/governorates_cubit.dart';
 import '../../features/collections/data/remote/collections_data_source.dart';
 import '../../features/collections/data/remote/impl/supabase_collections_data_source.dart';
 import '../../features/collections/data/repo/collections_repository.dart';
@@ -105,6 +107,9 @@ class DependencyInjector {
 
   // Checkout
   CheckoutCubit get checkoutCubit => CheckoutCubit(ordersRepository);
+  GovernoratesRepository get governoratesRepository =>
+      _deps[GovernoratesRepository] ??= GovernoratesRepository(_supabase);
+  GovernoratesCubit get governoratesCubit => GovernoratesCubit(governoratesRepository);
 
   // Navigation
   NavigationCubit get navigationCubit => _deps[NavigationCubit] ??= NavigationCubit();

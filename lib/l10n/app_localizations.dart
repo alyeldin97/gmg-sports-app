@@ -793,6 +793,19 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel Order'**
   String get cancelOrder;
+  String get contactInfo;
+  String get deliveryInfo;
+  String get firstName;
+  String get lastName;
+  String get governorate;
+  String get selectGovernorate;
+  String get shippingCost;
+  String get shippingUnavailable;
+  String get useSavedAddress;
+  String get requiredField;
+  String get invalidEmail;
+  String get shipping;
+  String deliveryIn(int days);
 
   /// No description provided for @yes.
   ///

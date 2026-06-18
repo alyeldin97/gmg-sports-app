@@ -367,4 +367,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get no => 'لا';
+
+  @override
+  String get contactInfo => 'معلومات التواصل';
+
+  @override
+  String get deliveryInfo => 'معلومات التوصيل';
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get lastName => 'الاسم الأخير';
+
+  @override
+  String get governorate => 'المحافظة';
+
+  @override
+  String get selectGovernorate => 'اختر المحافظة';
+
+  @override
+  String get shippingCost => 'الشحن';
+
+  @override
+  String get shippingUnavailable => 'الشحن غير متاح لهذه المحافظة';
+
+  @override
+  String get useSavedAddress => 'استخدام عنوان محفوظ';
+
+  @override
+  String get requiredField => 'مطلوب';
+
+  @override
+  String get invalidEmail => 'أدخل بريدًا إلكترونيًا صحيحًا';
+
+  @override
+  String get shipping => 'الشحن';
+
+  @override
+  String deliveryIn(int days) => 'التوصيل خلال $days ${days == 1 ? 'يوم' : 'أيام'}';
 }
