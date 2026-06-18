@@ -25,6 +25,10 @@ class HomeScreen extends StatelessWidget {
       final match = collections.where((c) => c.id == banner.linkId);
       if (match.isNotEmpty) {
         Navigator.of(context).pushNamed(ProductsScreen.routeName, arguments: match.first);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.somethingWrong)),
+        );
       }
     }
   }
