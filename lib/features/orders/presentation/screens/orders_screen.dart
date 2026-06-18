@@ -53,6 +53,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 if (state.status == OrdersStatus.loading || state.status == OrdersStatus.initial) {
                   return const Center(child: CircularProgressIndicator(color: AppColors.primaryDark));
                 }
+                if (state.status == OrdersStatus.failure) {
+                  return EmptyState(
+                    icon: Icons.wifi_off_rounded,
+                    title: context.l10n.somethingWrong,
+                    actionLabel: context.l10n.retry,
+                    onAction: () => context.read<OrdersCubit>().loadMyOrders(),
+                  );
+                }
                 if (state.orders.isEmpty) {
                   return EmptyState(icon: Icons.receipt_long_outlined, title: context.l10n.noOrders);
                 }

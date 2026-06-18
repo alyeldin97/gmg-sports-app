@@ -360,4 +360,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileUpdated => 'Profile updated';
+
+  @override
+  String get cancelOrder => 'Cancel Order';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
 }

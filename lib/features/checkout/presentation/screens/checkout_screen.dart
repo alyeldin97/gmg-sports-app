@@ -291,7 +291,7 @@ class _DateSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _Card(
-      title: context.l10n.deliveryDate,
+      title: '${context.l10n.deliveryDate} *',
       child: InkWell(
         onTap: onTap,
         borderRadius: AppBorderRadius.r12,

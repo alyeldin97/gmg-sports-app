@@ -29,6 +29,14 @@ class CollectionsScreen extends StatelessWidget {
           if (state.status == CollectionsStatus.loading || state.status == CollectionsStatus.initial) {
             return const Center(child: CircularProgressIndicator(color: AppColors.primaryDark));
           }
+          if (state.status == CollectionsStatus.failure) {
+            return EmptyState(
+              icon: Icons.wifi_off_rounded,
+              title: context.l10n.somethingWrong,
+              actionLabel: context.l10n.retry,
+              onAction: () => context.read<CollectionsCubit>().load(),
+            );
+          }
           if (state.collections.isEmpty) {
             return EmptyState(
               icon: Icons.grid_view_rounded,

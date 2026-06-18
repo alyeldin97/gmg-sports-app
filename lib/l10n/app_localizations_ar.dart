@@ -358,4 +358,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileUpdated => 'تم تحديث الملف الشخصي';
+
+  @override
+  String get cancelOrder => 'إلغاء الطلب';
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get no => 'لا';
 }

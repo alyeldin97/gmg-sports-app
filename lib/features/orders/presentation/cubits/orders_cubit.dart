@@ -28,4 +28,15 @@ class OrdersCubit extends Cubit<OrdersState> {
       emit(state.copyWith(status: OrdersStatus.failure, errorMessage: e.toString()));
     }
   }
+
+  Future<void> cancelOrder(String id) async {
+    emit(state.copyWith(status: OrdersStatus.loading));
+    try {
+      await _repository.cancelOrder(id);
+      final order = await _repository.getOrderById(id);
+      emit(state.copyWith(status: OrdersStatus.success, selected: order));
+    } catch (e) {
+      emit(state.copyWith(status: OrdersStatus.failure, errorMessage: e.toString()));
+    }
+  }
 }

@@ -52,7 +52,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           quantity: _quantity,
         );
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.added), duration: const Duration(seconds: 1)),
+      SnackBar(content: Text(context.l10n.added), duration: const Duration(seconds: 2)),
     );
   }
 
@@ -114,20 +114,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         final selected = v.id == _selectedVariant?.id;
                         return GestureDetector(
                           onTap: v.inStock ? () => setState(() => _selectedVariant = v) : null,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-                            decoration: BoxDecoration(
-                              color: selected ? AppColors.primary : AppColors.white,
-                              borderRadius: AppBorderRadius.r12,
-                              border: Border.all(
-                                color: selected ? AppColors.primaryDark : AppColors.border,
+                          child: Opacity(
+                            opacity: v.inStock ? 1.0 : 0.4,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                              decoration: BoxDecoration(
+                                color: selected
+                                    ? AppColors.primary
+                                    : (v.inStock ? AppColors.white : AppColors.scaffoldBg),
+                                borderRadius: AppBorderRadius.r12,
+                                border: Border.all(
+                                  color: selected ? AppColors.primaryDark : AppColors.border,
+                                ),
                               ),
-                            ),
-                            child: Text(
-                              v.localizedName(isArabic),
-                              style: AppTextStyles.label(context).copyWith(
-                                color: v.inStock ? AppColors.ink : AppColors.textLight,
-                                decoration: v.inStock ? null : TextDecoration.lineThrough,
+                              child: Text(
+                                v.localizedName(isArabic),
+                                style: AppTextStyles.label(context).copyWith(
+                                  color: v.inStock ? AppColors.ink : AppColors.textLight,
+                                  decoration: v.inStock ? null : TextDecoration.lineThrough,
+                                ),
                               ),
                             ),
                           ),
@@ -158,6 +163,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             children: [
               _QtyStepper(
                 quantity: _quantity,
+                max: _selectedVariant?.stock ?? widget.product.stock,
                 onChanged: (q) => setState(() => _quantity = q),
               ),
               SizedBox(width: 12.w),
@@ -177,8 +183,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 }
 
 class _QtyStepper extends StatelessWidget {
-  const _QtyStepper({required this.quantity, required this.onChanged});
+  const _QtyStepper({required this.quantity, required this.max, required this.onChanged});
   final int quantity;
+  final int max;
   final ValueChanged<int> onChanged;
 
   @override
@@ -196,7 +203,7 @@ class _QtyStepper extends StatelessWidget {
           ),
           Text('$quantity', style: AppTextStyles.subtitle(context)),
           IconButton(
-            onPressed: () => onChanged(quantity + 1),
+            onPressed: quantity < max ? () => onChanged(quantity + 1) : null,
             icon: const Icon(Icons.add, size: 18),
           ),
         ],

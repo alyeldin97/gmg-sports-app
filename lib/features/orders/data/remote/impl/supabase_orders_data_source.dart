@@ -48,4 +48,13 @@ class SupabaseOrdersDataSource implements OrdersDataSource {
     final row = await _client.from('orders').select(_select).eq('id', id).single();
     return Order.fromJson(row);
   }
+
+  @override
+  Future<void> cancelOrder(String id) async {
+    await _client
+        .from('orders')
+        .update({'status': 'cancelled'})
+        .eq('id', id)
+        .eq('user_id', _uid);
+  }
 }

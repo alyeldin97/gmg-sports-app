@@ -7,4 +7,5 @@ abstract class OrdersDataSource {
   });
   Future<List<Order>> getMyOrders();
   Future<Order> getOrderById(String id);
+  Future<void> cancelOrder(String id);
 }

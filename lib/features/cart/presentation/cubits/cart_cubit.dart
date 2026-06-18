@@ -18,7 +18,7 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(items: items));
   }
 
-  void addItem(Product product, {ProductVariant? variant, int quantity = 1}) {
+  Future<void> addItem(Product product, {ProductVariant? variant, int quantity = 1}) async {
     final items = List<CartItem>.from(state.items);
     final key = '${product.id}__${variant?.id ?? ''}';
     final index = items.indexWhere((i) => i.cartKey == key);
@@ -27,10 +27,10 @@ class CartCubit extends Cubit<CartState> {
     } else {
       items.add(CartItem(product: product, variant: variant, quantity: quantity));
     }
-    _emitAndSave(items);
+    await _emitAndSave(items);
   }
 
-  void setQuantity(String cartKey, int quantity) {
+  Future<void> setQuantity(String cartKey, int quantity) async {
     final items = List<CartItem>.from(state.items);
     final index = items.indexWhere((i) => i.cartKey == cartKey);
     if (index < 0) return;
@@ -39,12 +39,12 @@ class CartCubit extends Cubit<CartState> {
     } else {
       items[index] = items[index].copyWith(quantity: quantity);
     }
-    _emitAndSave(items);
+    await _emitAndSave(items);
   }
 
-  void removeItem(String cartKey) {
+  Future<void> removeItem(String cartKey) async {
     final items = List<CartItem>.from(state.items)..removeWhere((i) => i.cartKey == cartKey);
-    _emitAndSave(items);
+    await _emitAndSave(items);
   }
 
   Future<void> clear() async {
@@ -52,8 +52,8 @@ class CartCubit extends Cubit<CartState> {
     emit(const CartState());
   }
 
-  void _emitAndSave(List<CartItem> items) {
+  Future<void> _emitAndSave(List<CartItem> items) async {
     emit(state.copyWith(items: items));
-    _local.save(items);
+    await _local.save(items);
   }
 }

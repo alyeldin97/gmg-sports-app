@@ -18,4 +18,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
 
   @override
   Future<Order> getOrderById(String id) => _dataSource.getOrderById(id);
+
+  @override
+  Future<void> cancelOrder(String id) => _dataSource.cancelOrder(id);
 }

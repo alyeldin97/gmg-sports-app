@@ -18,6 +18,27 @@ import '../cubits/cart_cubit.dart';
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
+  void _confirmClear(BuildContext context) {
+    final cart = context.read<CartCubit>();
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(context.l10n.clearCart),
+        content: const Text('Remove all items from your cart?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogCtx), child: Text(context.l10n.cancel)),
+          TextButton(
+            onPressed: () {
+              cart.clear();
+              Navigator.pop(dialogCtx);
+            },
+            child: Text(context.l10n.clearCart, style: const TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +52,7 @@ class CartScreen extends StatelessWidget {
             builder: (context, state) => state.isEmpty
                 ? const SizedBox.shrink()
                 : TextButton(
-                    onPressed: () => context.read<CartCubit>().clear(),
+                    onPressed: () => _confirmClear(context),
                     child: Text(context.l10n.clearCart,
                         style: AppTextStyles.label(context).copyWith(color: AppColors.error)),
                   ),

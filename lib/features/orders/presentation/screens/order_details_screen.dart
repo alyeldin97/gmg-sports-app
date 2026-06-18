@@ -8,6 +8,7 @@ import '../../../../core/helpers/app_border.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../data/model/order.dart';
 import '../cubits/orders_cubit.dart';
@@ -41,7 +42,10 @@ class OrderDetailsScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator(color: AppColors.primaryDark));
             }
             final order = state.selected!;
-            return ListView(
+            return RefreshIndicator(
+              color: AppColors.primaryDark,
+              onRefresh: () => context.read<OrdersCubit>().loadOrder(orderId),
+              child: ListView(
               padding: EdgeInsets.all(16.r),
               children: [
                 _Card(
@@ -107,10 +111,41 @@ class OrderDetailsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (order.status == OrderStatus.pending) ...[
+                  SizedBox(height: 14.h),
+                  AppButton(
+                    label: context.l10n.cancelOrder,
+                    outlined: true,
+                    icon: Icons.cancel_outlined,
+                    onPressed: () => _confirmCancel(context, order.id),
+                  ),
+                ],
               ],
+            ),
             );
           },
         ),
+      ),
+    );
+  }
+
+  void _confirmCancel(BuildContext context, String orderId) {
+    final cubit = context.read<OrdersCubit>();
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(context.l10n.cancelOrder),
+        content: const Text('Are you sure you want to cancel this order?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogCtx), child: Text(context.l10n.no)),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogCtx);
+              cubit.cancelOrder(orderId);
+            },
+            child: Text(context.l10n.yes, style: const TextStyle(color: AppColors.error)),
+          ),
+        ],
       ),
     );
   }
