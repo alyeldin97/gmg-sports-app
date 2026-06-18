@@ -371,6 +371,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no => 'No';
 
   @override
+  String get noCollections => 'No collections yet';
+
+  @override
+  String get clearCartConfirm => 'Remove all items from your cart?';
+
+  @override
+  String get cancelOrderConfirm => 'Are you sure you want to cancel this order?';
+
+  @override
+  String get cancelledSuccessfully => 'Order cancelled successfully';
+
+  @override
+  String get deleteAddressConfirm => 'Delete this address?';
+
+  @override
+  String get addressDeleted => 'Address deleted';
+
+  @override
   String get contactInfo => 'Contact Information';
 
   @override

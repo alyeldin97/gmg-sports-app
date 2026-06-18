@@ -135,13 +135,18 @@ class OrderDetailsScreen extends StatelessWidget {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: Text(context.l10n.cancelOrder),
-        content: const Text('Are you sure you want to cancel this order?'),
+        content: Text(context.l10n.cancelOrderConfirm),
         actions: [
           TextButton(onPressed: () => Navigator.pop(dialogCtx), child: Text(context.l10n.no)),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(dialogCtx);
-              cubit.cancelOrder(orderId);
+              await cubit.cancelOrder(orderId);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(context.l10n.cancelledSuccessfully)),
+                );
+              }
             },
             child: Text(context.l10n.yes, style: const TextStyle(color: AppColors.error)),
           ),

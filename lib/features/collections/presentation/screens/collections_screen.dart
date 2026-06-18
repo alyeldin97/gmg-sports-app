@@ -40,9 +40,7 @@ class CollectionsScreen extends StatelessWidget {
           if (state.collections.isEmpty) {
             return EmptyState(
               icon: Icons.grid_view_rounded,
-              title: context.l10n.noProducts,
-              actionLabel: context.l10n.retry,
-              onAction: () => context.read<CollectionsCubit>().load(),
+              title: context.l10n.noCollections,
             );
           }
           return RefreshIndicator(

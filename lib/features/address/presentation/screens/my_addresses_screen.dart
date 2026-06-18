@@ -6,6 +6,7 @@ import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
 import '../../../../core/widgets/empty_state.dart';
+import '../../data/model/address.dart';
 import '../cubits/address_cubit.dart';
 import 'address_form_screen.dart';
 
@@ -13,7 +14,41 @@ class MyAddressesScreen extends StatelessWidget {
   static const String routeName = '/my-addresses';
   const MyAddressesScreen({super.key});
 
-  void _openForm(BuildContext context, {address}) {
+  void _confirmDelete(BuildContext context, String id) {
+    final cubit = context.read<AddressCubit>();
+    showDialog<void>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(context.l10n.delete),
+        content: Text(context.l10n.deleteAddressConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: Text(context.l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(dialogCtx);
+              final ok = await cubit.delete(id);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      ok ? context.l10n.addressDeleted : context.l10n.somethingWrong,
+                    ),
+                  ),
+                );
+              }
+            },
+            child: Text(context.l10n.delete,
+                style: const TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openForm(BuildContext context, {Address? address}) {
     final cubit = context.read<AddressCubit>();
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => BlocProvider.value(
@@ -90,7 +125,7 @@ class MyAddressesScreen extends StatelessWidget {
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete_outline, size: 18, color: AppColors.error),
-                          onPressed: () => context.read<AddressCubit>().delete(a.id),
+                          onPressed: () => _confirmDelete(context, a.id),
                         ),
                       ],
                     ),

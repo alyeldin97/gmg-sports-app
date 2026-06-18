@@ -38,9 +38,15 @@ class AddressCubit extends Cubit<AddressState> {
     }
   }
 
-  Future<void> delete(String id) async {
-    await _repository.deleteAddress(id);
-    await load();
+  Future<bool> delete(String id) async {
+    try {
+      await _repository.deleteAddress(id);
+      await load();
+      return true;
+    } catch (e) {
+      emit(state.copyWith(status: AddressStatus.failure, errorMessage: e.toString()));
+      return false;
+    }
   }
 
   Address? get selectedAddress {

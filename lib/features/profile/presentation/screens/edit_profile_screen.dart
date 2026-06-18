@@ -65,20 +65,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 validator: AppValidator.validatePhone,
               ),
               SizedBox(height: 24.h),
-              AppButton(
-                label: context.l10n.save,
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    context.read<AuthCubit>().updateProfile(
-                          name: _name.text.trim(),
-                          phone: _phone.text.trim(),
-                        );
+              BlocConsumer<AuthCubit, AuthState>(
+                listenWhen: (prev, curr) => prev.status != curr.status,
+                listener: (context, state) {
+                  if (state.status == AuthStatus.authenticated) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(context.l10n.profileUpdated)),
                     );
                     Navigator.of(context).pop();
+                  } else if (state.status == AuthStatus.failure) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(state.errorMessage ?? context.l10n.somethingWrong)),
+                    );
                   }
                 },
+                builder: (context, state) => AppButton(
+                  label: context.l10n.save,
+                  loading: state.status == AuthStatus.loading,
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      context.read<AuthCubit>().updateProfile(
+                            name: _name.text.trim(),
+                            phone: _phone.text.trim(),
+                          );
+                    }
+                  },
+                ),
               ),
             ],
           ),

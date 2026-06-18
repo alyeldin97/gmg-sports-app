@@ -369,6 +369,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no => 'لا';
 
   @override
+  String get noCollections => 'لا توجد مجموعات بعد';
+
+  @override
+  String get clearCartConfirm => 'إزالة جميع المنتجات من السلة؟';
+
+  @override
+  String get cancelOrderConfirm => 'هل أنت متأكد من إلغاء هذا الطلب؟';
+
+  @override
+  String get cancelledSuccessfully => 'تم إلغاء الطلب بنجاح';
+
+  @override
+  String get deleteAddressConfirm => 'حذف هذا العنوان؟';
+
+  @override
+  String get addressDeleted => 'تم حذف العنوان';
+
+  @override
   String get contactInfo => 'معلومات التواصل';
 
   @override

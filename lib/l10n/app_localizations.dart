@@ -793,6 +793,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel Order'**
   String get cancelOrder;
+  String get noCollections;
+  String get clearCartConfirm;
+  String get cancelOrderConfirm;
+  String get cancelledSuccessfully;
+  String get deleteAddressConfirm;
+  String get addressDeleted;
   String get contactInfo;
   String get deliveryInfo;
   String get firstName;

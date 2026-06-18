@@ -24,7 +24,7 @@ class CartScreen extends StatelessWidget {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: Text(context.l10n.clearCart),
-        content: const Text('Remove all items from your cart?'),
+        content: Text(context.l10n.clearCartConfirm),
         actions: [
           TextButton(onPressed: () => Navigator.pop(dialogCtx), child: Text(context.l10n.cancel)),
           TextButton(
