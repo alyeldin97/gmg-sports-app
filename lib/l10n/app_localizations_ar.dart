@@ -424,4 +424,67 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String deliveryIn(int days) => 'التوصيل خلال $days ${days == 1 ? 'يوم' : 'أيام'}';
+
+  @override
+  String onlyXLeft(int count) => 'متبقي $count فقط!';
+
+  @override
+  String freeShippingProgress(Object amount) => 'أضف $amount جنيه للحصول على شحن مجاني!';
+
+  @override
+  String get freeShipping => 'تهانينا! شحن مجاني!';
+
+  @override
+  String get youMightAlsoLike => 'قد يعجبك أيضًا';
+
+  @override
+  String get sortBy => 'ترتيب حسب';
+
+  @override
+  String get sortNewest => 'الأحدث';
+
+  @override
+  String get sortPriceLow => 'السعر: من الأقل';
+
+  @override
+  String get sortPriceHigh => 'السعر: من الأعلى';
+
+  @override
+  String get inStockOnly => 'المتوفر فقط';
+
+  @override
+  String get myWishlist => 'قائمة المفضلة';
+
+  @override
+  String get addToWishlist => 'حفظ في المفضلة';
+
+  @override
+  String get removeFromWishlist => 'إزالة من المفضلة';
+
+  @override
+  String get wishlistEmpty => 'قائمة المفضلة فارغة';
+
+  @override
+  String get loginToWishlist => 'سجّل دخولك لحفظ المنتجات في المفضلة';
+
+  @override
+  String get couponCode => 'كود الخصم';
+
+  @override
+  String get applyCoupon => 'تطبيق';
+
+  @override
+  String get couponApplied => 'تم تطبيق الكوبون!';
+
+  @override
+  String get invalidCoupon => 'كود خصم غير صحيح أو منتهي الصلاحية';
+
+  @override
+  String get discount => 'خصم';
+
+  @override
+  String get estimatedDelivery => 'موعد التسليم المتوقع';
+
+  @override
+  String get searchGovernorate => 'ابحث عن المحافظة…';
 }

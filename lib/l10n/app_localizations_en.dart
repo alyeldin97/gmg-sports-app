@@ -426,4 +426,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String deliveryIn(int days) => 'Delivery in $days day${days == 1 ? '' : 's'}';
+
+  @override
+  String onlyXLeft(int count) => 'Only $count left!';
+
+  @override
+  String freeShippingProgress(Object amount) => 'Add $amount EGP more for free shipping!';
+
+  @override
+  String get freeShipping => 'Free shipping unlocked!';
+
+  @override
+  String get youMightAlsoLike => 'You might also like';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String get sortNewest => 'Newest';
+
+  @override
+  String get sortPriceLow => 'Price: Low to High';
+
+  @override
+  String get sortPriceHigh => 'Price: High to Low';
+
+  @override
+  String get inStockOnly => 'In stock only';
+
+  @override
+  String get myWishlist => 'My Wishlist';
+
+  @override
+  String get addToWishlist => 'Save to wishlist';
+
+  @override
+  String get removeFromWishlist => 'Remove from wishlist';
+
+  @override
+  String get wishlistEmpty => 'Your wishlist is empty';
+
+  @override
+  String get loginToWishlist => 'Sign in to save items to your wishlist';
+
+  @override
+  String get couponCode => 'Coupon code';
+
+  @override
+  String get applyCoupon => 'Apply';
+
+  @override
+  String get couponApplied => 'Coupon applied!';
+
+  @override
+  String get invalidCoupon => 'Invalid or expired coupon code';
+
+  @override
+  String get discount => 'Discount';
+
+  @override
+  String get estimatedDelivery => 'Estimated delivery';
+
+  @override
+  String get searchGovernorate => 'Search governorate…';
 }

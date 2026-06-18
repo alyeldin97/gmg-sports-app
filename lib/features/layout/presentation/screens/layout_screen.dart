@@ -5,8 +5,10 @@ import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/navigation/cubits/navigation_cubit.dart';
 import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
+import '../../../auth/presentation/cubits/auth_cubit.dart';
 import '../../../cart/presentation/cubits/cart_cubit.dart';
 import '../../../cart/presentation/screens/cart_screen.dart';
+import '../../../wishlist/presentation/cubits/wishlist_cubit.dart';
 import '../../../collections/presentation/screens/collections_screen.dart';
 import '../../../home/presentation/screens/home_screen.dart';
 import '../../../orders/presentation/screens/orders_screen.dart';
@@ -26,9 +28,27 @@ class LayoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavigationCubit, int>(
-      builder: (context, index) {
-        return PopScope(
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (prev, curr) =>
+              prev.status == AuthStatus.authenticated && curr.status == AuthStatus.guest,
+          listener: (context, _) {
+            context.read<CartCubit>().clear();
+            context.read<WishlistCubit>().clear();
+          },
+        ),
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (prev, curr) =>
+              curr.status == AuthStatus.authenticated && curr.user != null &&
+              prev.status != AuthStatus.authenticated,
+          listener: (context, state) =>
+              context.read<WishlistCubit>().load(state.user!.id),
+        ),
+      ],
+      child: BlocBuilder<NavigationCubit, int>(
+        builder: (context, index) {
+          return PopScope(
           canPop: index == 0,
           onPopInvokedWithResult: (didPop, _) {
             if (!didPop && index != 0) context.read<NavigationCubit>().navigateTo(0);
@@ -39,6 +59,7 @@ class LayoutScreen extends StatelessWidget {
           ),
         );
       },
+    ),
     );
   }
 }

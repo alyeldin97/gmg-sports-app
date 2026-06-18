@@ -16,6 +16,9 @@ class AppTextField extends StatefulWidget {
     this.maxLines = 1,
     this.initialValue,
     this.onChanged,
+    this.focusNode,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
 
   final String label;
@@ -27,6 +30,9 @@ class AppTextField extends StatefulWidget {
   final int maxLines;
   final String? initialValue;
   final ValueChanged<String>? onChanged;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onFieldSubmitted;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -50,6 +56,9 @@ class _AppTextFieldState extends State<AppTextField> {
           obscureText: _obscured,
           maxLines: widget.obscure ? 1 : widget.maxLines,
           onChanged: widget.onChanged,
+          focusNode: widget.focusNode,
+          textInputAction: widget.textInputAction,
+          onFieldSubmitted: widget.onFieldSubmitted,
           style: AppTextStyles.body(context),
           decoration: InputDecoration(
             isDense: true,

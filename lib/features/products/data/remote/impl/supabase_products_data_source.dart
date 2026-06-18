@@ -45,4 +45,16 @@ class SupabaseProductsDataSource implements ProductsDataSource {
     final row = await _client.from('products').select(_select).eq('id', id).single();
     return Product.fromJson(row);
   }
+
+  @override
+  Future<List<Product>> getProductsByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    final rows = await _client
+        .from('products')
+        .select(_select)
+        .inFilter('id', ids)
+        .eq('is_active', true)
+        .order('created_at', ascending: false);
+    return (rows as List).map((e) => Product.fromJson(e as Map<String, dynamic>)).toList();
+  }
 }

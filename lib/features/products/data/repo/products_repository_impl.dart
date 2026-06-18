@@ -12,4 +12,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
 
   @override
   Future<Product> getProductById(String id) => _dataSource.getProductById(id);
+
+  @override
+  Future<List<Product>> getProductsByIds(List<String> ids) => _dataSource.getProductsByIds(ids);
 }

@@ -17,6 +17,8 @@ import 'features/products/presentation/screens/product_details_screen.dart';
 import 'features/products/presentation/screens/products_screen.dart';
 import 'features/profile/presentation/screens/edit_profile_screen.dart';
 import 'features/splash/presentation/screens/splash_screen.dart';
+import 'features/coupon/presentation/cubits/coupon_cubit.dart';
+import 'features/wishlist/presentation/screens/wishlist_screen.dart';
 
 class RouteGenerator {
   static const String initialRoute = LayoutScreen.routeName;
@@ -57,6 +59,7 @@ class RouteGenerator {
               BlocProvider(create: (_) => DependencyInjector().governoratesCubit),
               BlocProvider(create: (_) => DependencyInjector().addressCubit),
               BlocProvider(create: (_) => DependencyInjector().appSettingsCubit),
+              BlocProvider(create: (_) => DependencyInjector().couponCubit),
             ],
             child: const CheckoutScreen(),
           ),
@@ -77,6 +80,9 @@ class RouteGenerator {
             child: const MyAddressesScreen(),
           ),
         );
+
+      case WishlistScreen.routeName:
+        return _page(const WishlistScreen());
 
       case EditProfileScreen.routeName:
         return _page(const EditProfileScreen());

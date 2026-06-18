@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/extensions/price_x.dart';
 import '../../../../core/helpers/app_border.dart';
 import '../../../../core/localization/l10n_extension.dart';
@@ -9,9 +10,13 @@ import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_network_image.dart';
+import '../../../auth/presentation/cubits/auth_cubit.dart';
 import '../../../cart/presentation/cubits/cart_cubit.dart';
+import '../../../wishlist/presentation/cubits/wishlist_cubit.dart';
 import '../../data/model/product.dart';
 import '../../data/model/product_variant.dart';
+import '../cubits/products_cubit.dart';
+import '../widgets/product_card.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   static const String routeName = '/product-details';
@@ -26,6 +31,8 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   ProductVariant? _selectedVariant;
   int _quantity = 1;
+  int _imageIndex = 0;
+  late final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -38,7 +45,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     }
   }
 
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   double get _currentPrice => _selectedVariant?.price ?? widget.product.price;
+  int get _currentStock => _selectedVariant?.stock ?? widget.product.stock;
 
   bool get _canAdd {
     if (widget.product.hasVariants) return _selectedVariant?.inStock ?? false;
@@ -52,7 +66,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           quantity: _quantity,
         );
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.added), duration: const Duration(seconds: 2)),
+      SnackBar(
+        content: Text(context.l10n.added),
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: context.l10n.navCart,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
     );
   }
 
@@ -61,6 +82,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final p = widget.product;
     final isArabic = context.read<LocaleCubit>().isArabic;
     final description = p.localizedDescription(isArabic);
+    final images = p.images.isNotEmpty ? p.images : <String>[];
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
@@ -71,8 +93,82 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             pinned: true,
             backgroundColor: AppColors.white,
             iconTheme: const IconThemeData(color: AppColors.ink),
+            actions: [
+              BlocBuilder<WishlistCubit, WishlistState>(
+                builder: (context, ws) {
+                  final auth = context.watch<AuthCubit>().state;
+                  if (!auth.isLoggedIn) return const SizedBox.shrink();
+                  final isSaved = ws.contains(p.id);
+                  return IconButton(
+                    icon: Icon(
+                      isSaved ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                      color: isSaved ? AppColors.error : AppColors.ink,
+                    ),
+                    onPressed: () =>
+                        context.read<WishlistCubit>().toggle(auth.user!.id, p.id),
+                  );
+                },
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
-              background: AppNetworkImage(url: p.primaryImage, fit: BoxFit.cover),
+              background: Stack(
+                children: [
+                  if (images.length > 1)
+                    PageView.builder(
+                      controller: _pageController,
+                      itemCount: images.length,
+                      onPageChanged: (i) => setState(() => _imageIndex = i),
+                      itemBuilder: (_, i) => InteractiveViewer(
+                        child: AppNetworkImage(url: images[i], fit: BoxFit.cover),
+                      ),
+                    )
+                  else
+                    InteractiveViewer(
+                      child: AppNetworkImage(url: p.primaryImage, fit: BoxFit.cover),
+                    ),
+                  if (images.length > 1)
+                    Positioned(
+                      bottom: 12,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(images.length, (i) {
+                          final sel = i == _imageIndex;
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            width: sel ? 18 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: sel
+                                  ? AppColors.primary
+                                  : Colors.white.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  if (p.hasDiscount)
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.error,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text('−${p.discountPercent}%',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700)),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -84,23 +180,37 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   Text(p.localizedName(isArabic), style: AppTextStyles.heading2(context)),
                   SizedBox(height: 8.h),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text('${_currentPrice.asPrice} ${context.l10n.currency}',
-                          style: AppTextStyles.heading2(context).copyWith(color: AppColors.primaryDark)),
+                          style: AppTextStyles.heading2(context)
+                              .copyWith(color: AppColors.primaryDark)),
                       if (p.hasDiscount) ...[
                         SizedBox(width: 8.w),
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 2.h),
-                          child: Text(
-                            p.compareAtPrice!.asPrice,
-                            style: AppTextStyles.body(context).copyWith(
-                              decoration: TextDecoration.lineThrough,
-                              color: AppColors.textLight,
-                            ),
+                        Text(
+                          p.compareAtPrice!.asPrice,
+                          style: AppTextStyles.body(context).copyWith(
+                            decoration: TextDecoration.lineThrough,
+                            color: AppColors.textLight,
                           ),
                         ),
                       ],
+                      const Spacer(),
+                      if (_currentStock > 0 && _currentStock <= 5)
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            color: AppColors.accentOrange.withValues(alpha: 0.12),
+                            borderRadius: AppBorderRadius.r12,
+                          ),
+                          child: Text(
+                            context.l10n.onlyXLeft(_currentStock),
+                            style: AppTextStyles.bodySmall(context).copyWith(
+                              color: AppColors.accentOrange,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                   SizedBox(height: 16.h),
@@ -145,7 +255,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     Text(context.l10n.description, style: AppTextStyles.heading3(context)),
                     SizedBox(height: 6.h),
                     Text(description, style: AppTextStyles.body(context)),
+                    SizedBox(height: 16.h),
                   ],
+                  if (p.collectionIds.isNotEmpty) _RecommendationsSection(product: p),
                   SizedBox(height: 80.h),
                 ],
               ),
@@ -163,7 +275,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             children: [
               _QtyStepper(
                 quantity: _quantity,
-                max: _selectedVariant?.stock ?? widget.product.stock,
+                max: _currentStock,
                 onChanged: (q) => setState(() => _quantity = q),
               ),
               SizedBox(width: 12.w),
@@ -207,6 +319,49 @@ class _QtyStepper extends StatelessWidget {
             icon: const Icon(Icons.add, size: 18),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RecommendationsSection extends StatelessWidget {
+  const _RecommendationsSection({required this.product});
+  final Product product;
+
+  @override
+  Widget build(BuildContext context) {
+    final collectionId = product.collectionIds.first;
+    return BlocProvider(
+      create: (_) => DependencyInjector().productsCubit..loadForCollection(collectionId),
+      child: BlocBuilder<ProductsCubit, ProductsState>(
+        builder: (context, state) {
+          if (state.status != ProductsStatus.success) return const SizedBox.shrink();
+          final recs = state.products
+              .where((p) => p.id != product.id && p.isActive)
+              .take(8)
+              .toList();
+          if (recs.isEmpty) return const SizedBox.shrink();
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.l10n.youMightAlsoLike, style: AppTextStyles.heading3(context)),
+              SizedBox(height: 10.h),
+              SizedBox(
+                height: 220.h,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: recs.length,
+                  separatorBuilder: (_, __) => SizedBox(width: 10.w),
+                  itemBuilder: (context, i) => SizedBox(
+                    width: 140.w,
+                    child: ProductCard(product: recs[i]),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+            ],
+          );
+        },
       ),
     );
   }

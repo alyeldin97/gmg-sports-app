@@ -28,4 +28,14 @@ class ProductsCubit extends Cubit<ProductsState> {
       emit(state.copyWith(status: ProductsStatus.failure, errorMessage: e.toString()));
     }
   }
+
+  Future<void> loadByIds(List<String> ids) async {
+    emit(state.copyWith(status: ProductsStatus.loading));
+    try {
+      final products = await _repository.getProductsByIds(ids);
+      emit(state.copyWith(status: ProductsStatus.success, products: products));
+    } catch (e) {
+      emit(state.copyWith(status: ProductsStatus.failure, errorMessage: e.toString()));
+    }
+  }
 }

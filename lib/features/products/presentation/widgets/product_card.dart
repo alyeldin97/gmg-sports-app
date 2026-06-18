@@ -8,6 +8,8 @@ import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
 import '../../../../core/widgets/app_network_image.dart';
+import '../../../auth/presentation/cubits/auth_cubit.dart';
+import '../../../wishlist/presentation/cubits/wishlist_cubit.dart';
 import '../../data/model/product.dart';
 import '../screens/product_details_screen.dart';
 
@@ -57,6 +59,11 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                PositionedDirectional(
+                  top: 6,
+                  end: 6,
+                  child: _WishlistHeart(productId: product.id),
+                ),
                 if (!product.inStock)
                   Positioned.fill(
                     child: Container(
@@ -104,6 +111,40 @@ class ProductCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _WishlistHeart extends StatelessWidget {
+  const _WishlistHeart({required this.productId});
+  final String productId;
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.watch<AuthCubit>().state;
+    if (!auth.isLoggedIn) return const SizedBox.shrink();
+
+    return BlocBuilder<WishlistCubit, WishlistState>(
+      builder: (context, state) {
+        final isSaved = state.contains(productId);
+        return GestureDetector(
+          onTap: () {
+            context.read<WishlistCubit>().toggle(auth.user!.id, productId);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            decoration: const BoxDecoration(
+              color: AppColors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isSaved ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+              size: 18,
+              color: isSaved ? AppColors.error : AppColors.textLight,
+            ),
+          ),
+        );
+      },
     );
   }
 }

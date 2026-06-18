@@ -40,6 +40,16 @@ import '../../features/products/data/remote/products_data_source.dart';
 import '../../features/products/data/repo/products_repository.dart';
 import '../../features/products/data/repo/products_repository_impl.dart';
 import '../../features/products/presentation/cubits/products_cubit.dart';
+import '../../features/coupon/data/remote/coupon_data_source.dart';
+import '../../features/coupon/data/remote/impl/supabase_coupon_data_source.dart';
+import '../../features/coupon/data/repo/coupon_repository.dart';
+import '../../features/coupon/data/repo/coupon_repository_impl.dart';
+import '../../features/coupon/presentation/cubits/coupon_cubit.dart';
+import '../../features/wishlist/data/remote/impl/supabase_wishlist_data_source.dart';
+import '../../features/wishlist/data/remote/wishlist_data_source.dart';
+import '../../features/wishlist/data/repo/wishlist_repository.dart';
+import '../../features/wishlist/data/repo/wishlist_repository_impl.dart';
+import '../../features/wishlist/presentation/cubits/wishlist_cubit.dart';
 import '../navigation/cubits/navigation_cubit.dart';
 
 class DependencyInjector {
@@ -110,6 +120,20 @@ class DependencyInjector {
   GovernoratesRepository get governoratesRepository =>
       _deps[GovernoratesRepository] ??= GovernoratesRepository(_supabase);
   GovernoratesCubit get governoratesCubit => GovernoratesCubit(governoratesRepository);
+
+  // Coupon
+  CouponDataSource get couponDataSource =>
+      _deps[CouponDataSource] ??= SupabaseCouponDataSource(_supabase);
+  CouponRepository get couponRepository =>
+      _deps[CouponRepository] ??= CouponRepositoryImpl(couponDataSource);
+  CouponCubit get couponCubit => CouponCubit(couponRepository);
+
+  // Wishlist
+  WishlistDataSource get wishlistDataSource =>
+      _deps[WishlistDataSource] ??= SupabaseWishlistDataSource(_supabase);
+  WishlistRepository get wishlistRepository =>
+      _deps[WishlistRepository] ??= WishlistRepositoryImpl(wishlistDataSource);
+  WishlistCubit get wishlistCubit => _deps[WishlistCubit] ??= WishlistCubit(wishlistRepository);
 
   // Navigation
   NavigationCubit get navigationCubit => _deps[NavigationCubit] ??= NavigationCubit();

@@ -11,6 +11,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../address/presentation/screens/my_addresses_screen.dart';
 import '../../../auth/presentation/cubits/auth_cubit.dart';
 import '../../../auth/presentation/screens/login_screen.dart';
+import '../../../wishlist/presentation/screens/wishlist_screen.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -68,6 +69,8 @@ class ProfileScreen extends StatelessWidget {
           if (auth.isLoggedIn) ...[
             _tile(context, Icons.person_outline_rounded, context.l10n.editProfile,
                 () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const EditProfileScreen()))),
+            _tile(context, Icons.favorite_border_rounded, context.l10n.myWishlist,
+                () => Navigator.of(context).pushNamed(WishlistScreen.routeName)),
             _tile(context, Icons.location_on_outlined, context.l10n.myAddresses, () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => BlocProvider(

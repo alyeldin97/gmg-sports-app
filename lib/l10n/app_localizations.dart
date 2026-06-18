@@ -812,6 +812,27 @@ abstract class AppLocalizations {
   String get invalidEmail;
   String get shipping;
   String deliveryIn(int days);
+  String onlyXLeft(int count);
+  String freeShippingProgress(Object amount);
+  String get freeShipping;
+  String get youMightAlsoLike;
+  String get sortBy;
+  String get sortNewest;
+  String get sortPriceLow;
+  String get sortPriceHigh;
+  String get inStockOnly;
+  String get myWishlist;
+  String get addToWishlist;
+  String get removeFromWishlist;
+  String get wishlistEmpty;
+  String get loginToWishlist;
+  String get couponCode;
+  String get applyCoupon;
+  String get couponApplied;
+  String get invalidCoupon;
+  String get discount;
+  String get estimatedDelivery;
+  String get searchGovernorate;
 
   /// No description provided for @yes.
   ///

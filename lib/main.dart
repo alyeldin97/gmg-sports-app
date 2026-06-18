@@ -15,6 +15,7 @@ import 'features/cart/presentation/cubits/cart_cubit.dart';
 import 'features/collections/presentation/cubits/collections_cubit.dart';
 import 'features/home/presentation/cubits/home_cubit.dart';
 import 'features/orders/presentation/cubits/orders_cubit.dart';
+import 'features/wishlist/presentation/cubits/wishlist_cubit.dart';
 import 'l10n/app_localizations.dart';
 import 'routes.dart';
 
@@ -48,6 +49,7 @@ class GmgApp extends StatelessWidget {
             BlocProvider<AppSettingsCubit>(create: (_) => di.appSettingsCubit..load()),
             BlocProvider<CollectionsCubit>(create: (_) => di.collectionsCubit..load()),
             BlocProvider<OrdersCubit>(create: (_) => di.ordersCubit),
+            BlocProvider<WishlistCubit>(create: (_) => di.wishlistCubit),
           ],
           child: BlocBuilder<LocaleCubit, Locale>(
             builder: (context, locale) {

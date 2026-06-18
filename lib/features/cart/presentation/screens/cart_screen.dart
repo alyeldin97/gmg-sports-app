@@ -11,6 +11,7 @@ import '../../../../core/styling/text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_network_image.dart';
 import '../../../../core/widgets/empty_state.dart';
+import '../../../app_settings/presentation/cubits/app_settings_cubit.dart';
 import '../../../checkout/presentation/screens/checkout_screen.dart';
 import '../../data/model/cart_item.dart';
 import '../cubits/cart_cubit.dart';
@@ -138,6 +139,8 @@ class _QtyControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = context.read<CartCubit>();
+    final maxStock = item.variant?.stock ?? item.product.stock;
+    final atMax = item.quantity >= maxStock;
     return Column(
       children: [
         Container(
@@ -152,7 +155,7 @@ class _QtyControl extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 6.w),
                 child: Text('${item.quantity}', style: AppTextStyles.subtitle(context)),
               ),
-              _iconBtn(Icons.add, () => cart.setQuantity(item.cartKey, item.quantity + 1)),
+              _iconBtn(Icons.add, atMax ? null : () => cart.setQuantity(item.cartKey, item.quantity + 1)),
             ],
           ),
         ),
@@ -167,10 +170,13 @@ class _QtyControl extends StatelessWidget {
     );
   }
 
-  Widget _iconBtn(IconData icon, VoidCallback onTap) => InkWell(
+  Widget _iconBtn(IconData icon, VoidCallback? onTap) => InkWell(
         onTap: onTap,
         customBorder: const CircleBorder(),
-        child: Padding(padding: const EdgeInsets.all(6), child: Icon(icon, size: 16)),
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Icon(icon, size: 16, color: onTap == null ? AppColors.textLight : null),
+        ),
       );
 }
 
@@ -180,6 +186,11 @@ class _CartSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = context.watch<AppSettingsCubit>().state;
+    final threshold = settings.freeDeliveryThreshold;
+    final remaining = threshold - subtotal;
+    final progress = (subtotal / threshold).clamp(0.0, 1.0);
+
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(16.r),
@@ -187,7 +198,52 @@ class _CartSummary extends StatelessWidget {
           BoxShadow(color: Color(0x14000000), blurRadius: 16, offset: Offset(0, -4)),
         ]),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (remaining > 0) ...[
+              Row(
+                children: [
+                  const Icon(Icons.local_shipping_outlined, size: 16, color: AppColors.primaryDark),
+                  SizedBox(width: 6.w),
+                  Expanded(
+                    child: Text(
+                      context.l10n.freeShippingProgress(remaining.asPrice),
+                      style: AppTextStyles.bodySmall(context).copyWith(color: AppColors.primaryDark),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 6.h),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: AppColors.border,
+                  valueColor: const AlwaysStoppedAnimation(AppColors.primaryDark),
+                  minHeight: 6,
+                ),
+              ),
+              SizedBox(height: 12.h),
+            ] else ...[
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                margin: EdgeInsets.only(bottom: 10.h),
+                decoration: BoxDecoration(
+                  color: AppColors.accentGreen.withValues(alpha: 0.1),
+                  borderRadius: AppBorderRadius.full,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.check_circle_outline, size: 16.r, color: AppColors.accentGreen),
+                    SizedBox(width: 6.w),
+                    Text(context.l10n.freeShipping,
+                        style: AppTextStyles.bodySmall(context)
+                            .copyWith(color: AppColors.accentGreen, fontWeight: FontWeight.w700)),
+                  ],
+                ),
+              ),
+            ],
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

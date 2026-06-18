@@ -13,6 +13,7 @@ import '../../../address/presentation/cubits/address_cubit.dart';
 import '../../../app_settings/presentation/cubits/app_settings_cubit.dart';
 import '../../../auth/presentation/cubits/auth_cubit.dart';
 import '../../../cart/presentation/cubits/cart_cubit.dart';
+import '../../../coupon/presentation/cubits/coupon_cubit.dart';
 import '../../data/model/governorate.dart';
 import 'order_confirmed_screen.dart';
 import '../cubits/checkout_cubit.dart';
@@ -36,6 +37,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _streetCtrl = TextEditingController();
   final _aptCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
+
+  final _emailFocus = FocusNode();
+  final _firstNameFocus = FocusNode();
+  final _lastNameFocus = FocusNode();
+  final _phoneFocus = FocusNode();
+  final _cityFocus = FocusNode();
+  final _streetFocus = FocusNode();
+  final _aptFocus = FocusNode();
+  final _notesFocus = FocusNode();
+
   Governorate? _selectedGovernorate;
 
   @override
@@ -60,6 +71,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _cityCtrl, _streetCtrl, _aptCtrl, _notesCtrl]) {
       c.dispose();
     }
+    for (final f in [_emailFocus, _firstNameFocus, _lastNameFocus, _phoneFocus,
+        _cityFocus, _streetFocus, _aptFocus, _notesFocus]) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -78,10 +93,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
+    final minDate = now.add(const Duration(days: 1));
     final picked = await showDatePicker(
       context: context,
-      initialDate: now.add(const Duration(days: 1)),
-      firstDate: now.add(const Duration(days: 1)),
+      initialDate: minDate,
+      firstDate: minDate,
       lastDate: now.add(const Duration(days: 30)),
       builder: (ctx, child) => Theme(
         data: Theme.of(ctx).copyWith(
@@ -93,6 +109,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
     if (picked != null && mounted) {
       context.read<CheckoutCubit>().setDeliveryDate(picked);
+    }
+  }
+
+  Future<void> _pickGovernorate(List<Governorate> governorates) async {
+    final result = await showModalBottomSheet<Governorate>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (_) => _GovernoratePickerSheet(
+        governorates: governorates,
+        selected: _selectedGovernorate,
+      ),
+    );
+    if (result != null && mounted) {
+      setState(() => _selectedGovernorate = result);
     }
   }
 
@@ -169,20 +201,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         firstNameCtrl: _firstNameCtrl,
                         lastNameCtrl: _lastNameCtrl,
                         phoneCtrl: _phoneCtrl,
+                        emailFocus: _emailFocus,
+                        firstNameFocus: _firstNameFocus,
+                        lastNameFocus: _lastNameFocus,
+                        phoneFocus: _phoneFocus,
+                        cityFocus: _cityFocus,
                         onUseSaved: _prefillFromAddress,
                       ),
                       SizedBox(height: 16.h),
-                      _DeliverySection(
-                        selectedGovernorate: _selectedGovernorate,
-                        cityCtrl: _cityCtrl,
-                        streetCtrl: _streetCtrl,
-                        aptCtrl: _aptCtrl,
-                        onGovernorateChanged: (g) =>
-                            setState(() => _selectedGovernorate = g),
+                      BlocBuilder<GovernoratesCubit, GovernoratesState>(
+                        builder: (context, govState) => _DeliverySection(
+                          selectedGovernorate: _selectedGovernorate,
+                          cityCtrl: _cityCtrl,
+                          streetCtrl: _streetCtrl,
+                          aptCtrl: _aptCtrl,
+                          cityFocus: _cityFocus,
+                          streetFocus: _streetFocus,
+                          aptFocus: _aptFocus,
+                          notesFocus: _notesFocus,
+                          onPickGovernorate: () =>
+                              _pickGovernorate(govState.governorates),
+                        ),
                       ),
                       SizedBox(height: 16.h),
                       _DateSection(
-                          date: checkout.deliveryDate, onTap: _pickDate),
+                        date: checkout.deliveryDate,
+                        selectedGovernorate: _selectedGovernorate,
+                        onTap: _pickDate,
+                      ),
                       SizedBox(height: 16.h),
                       _PaymentSection(
                         selected: checkout.paymentMethod,
@@ -191,14 +237,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                       SizedBox(height: 16.h),
                       AppTextField(
-                          label: context.l10n.orderNotes,
-                          controller: _notesCtrl,
-                          maxLines: 3),
+                        label: context.l10n.orderNotes,
+                        controller: _notesCtrl,
+                        focusNode: _notesFocus,
+                        maxLines: 3,
+                        textInputAction: TextInputAction.done,
+                      ),
                       SizedBox(height: 16.h),
-                      _SummarySection(
-                        subtotal: cart.subtotal,
-                        shipping: shipping,
-                        governorate: _selectedGovernorate,
+                      _CouponSection(subtotal: cart.subtotal),
+                      SizedBox(height: 16.h),
+                      BlocBuilder<CouponCubit, CouponState>(
+                        builder: (context, coupon) => _SummarySection(
+                          subtotal: cart.subtotal,
+                          shipping: shipping,
+                          governorate: _selectedGovernorate,
+                          discount: coupon.discount,
+                        ),
                       ),
                       SizedBox(height: 8.h),
                     ],
@@ -269,9 +323,15 @@ class _ContactSection extends StatelessWidget {
     required this.firstNameCtrl,
     required this.lastNameCtrl,
     required this.phoneCtrl,
+    required this.emailFocus,
+    required this.firstNameFocus,
+    required this.lastNameFocus,
+    required this.phoneFocus,
+    required this.cityFocus,
     required this.onUseSaved,
   });
   final TextEditingController emailCtrl, firstNameCtrl, lastNameCtrl, phoneCtrl;
+  final FocusNode emailFocus, firstNameFocus, lastNameFocus, phoneFocus, cityFocus;
   final VoidCallback onUseSaved;
 
   @override
@@ -302,7 +362,10 @@ class _ContactSection extends StatelessWidget {
           AppTextField(
             label: context.l10n.email,
             controller: emailCtrl,
+            focusNode: emailFocus,
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(firstNameFocus),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return context.l10n.requiredField;
               if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(v.trim())) {
@@ -318,6 +381,9 @@ class _ContactSection extends StatelessWidget {
                 child: AppTextField(
                   label: context.l10n.firstName,
                   controller: firstNameCtrl,
+                  focusNode: firstNameFocus,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(lastNameFocus),
                   validator: (v) => (v == null || v.trim().isEmpty)
                       ? context.l10n.requiredField
                       : null,
@@ -328,6 +394,9 @@ class _ContactSection extends StatelessWidget {
                 child: AppTextField(
                   label: context.l10n.lastName,
                   controller: lastNameCtrl,
+                  focusNode: lastNameFocus,
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(phoneFocus),
                   validator: (v) => (v == null || v.trim().isEmpty)
                       ? context.l10n.requiredField
                       : null,
@@ -339,12 +408,129 @@ class _ContactSection extends StatelessWidget {
           AppTextField(
             label: context.l10n.phone,
             controller: phoneCtrl,
+            focusNode: phoneFocus,
             keyboardType: TextInputType.phone,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(cityFocus),
             validator: (v) => (v == null || v.trim().isEmpty)
                 ? context.l10n.requiredField
                 : null,
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Governorate picker bottom sheet ─────────────────────────────────────────
+
+class _GovernoratePickerSheet extends StatefulWidget {
+  const _GovernoratePickerSheet({required this.governorates, this.selected});
+  final List<Governorate> governorates;
+  final Governorate? selected;
+
+  @override
+  State<_GovernoratePickerSheet> createState() => _GovernoratePickerSheetState();
+}
+
+class _GovernoratePickerSheetState extends State<_GovernoratePickerSheet> {
+  final _searchCtrl = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final filtered = _query.isEmpty
+        ? widget.governorates
+        : widget.governorates
+            .where((g) =>
+                g.name.toLowerCase().contains(_query) ||
+                g.nameAr.toLowerCase().contains(_query))
+            .toList();
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.7,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (context, scrollController) => Padding(
+        padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+        child: Column(
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            SizedBox(height: 12.h),
+            Text(context.l10n.governorate, style: AppTextStyles.subtitle(context)),
+            SizedBox(height: 12.h),
+            TextField(
+              controller: _searchCtrl,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: context.l10n.searchGovernorate,
+                prefixIcon: const Icon(Icons.search, color: AppColors.textLight),
+                suffixIcon: _query.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        onPressed: () {
+                          _searchCtrl.clear();
+                          setState(() => _query = '');
+                        },
+                      )
+                    : null,
+                isDense: true,
+                filled: true,
+                fillColor: AppColors.scaffoldBg,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
+              ),
+              onChanged: (v) => setState(() => _query = v.toLowerCase()),
+            ),
+            SizedBox(height: 8.h),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: filtered.length,
+                itemBuilder: (context, i) {
+                  final g = filtered[i];
+                  final selected = g.id == widget.selected?.id;
+                  return ListTile(
+                    onTap: () => Navigator.of(context).pop(g),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                    leading: selected
+                        ? const Icon(Icons.check_circle, color: AppColors.primaryDark)
+                        : const Icon(Icons.location_city_outlined, color: AppColors.textLight),
+                    title: Text(g.localizedName(isArabic), style: AppTextStyles.body(context)),
+                    subtitle: Text(
+                      '${g.shippingCost.asPrice} EGP  •  ${g.deliveryDays} day${g.deliveryDays == 1 ? '' : 's'}',
+                      style: AppTextStyles.bodySmall(context),
+                    ),
+                    selected: selected,
+                    selectedColor: AppColors.primaryDark,
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom),
+          ],
+        ),
       ),
     );
   }
@@ -358,96 +544,109 @@ class _DeliverySection extends StatelessWidget {
     required this.cityCtrl,
     required this.streetCtrl,
     required this.aptCtrl,
-    required this.onGovernorateChanged,
+    required this.cityFocus,
+    required this.streetFocus,
+    required this.aptFocus,
+    required this.notesFocus,
+    required this.onPickGovernorate,
   });
   final Governorate? selectedGovernorate;
   final TextEditingController cityCtrl, streetCtrl, aptCtrl;
-  final ValueChanged<Governorate?> onGovernorateChanged;
+  final FocusNode cityFocus, streetFocus, aptFocus, notesFocus;
+  final VoidCallback onPickGovernorate;
 
   @override
   Widget build(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
     return _Card(
       title: context.l10n.deliveryInfo,
-      child: BlocBuilder<GovernoratesCubit, GovernoratesState>(
-        builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(context.l10n.governorate, style: AppTextStyles.label(context)),
-              SizedBox(height: 6.h),
-              DropdownButtonFormField<Governorate>(
-                value: selectedGovernorate,
-                hint: Text(context.l10n.selectGovernorate,
-                    style: AppTextStyles.body(context)),
-                isExpanded: true,
-                decoration: InputDecoration(
-                  isDense: true,
-                  filled: true,
-                  fillColor: AppColors.white,
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
-                  border: OutlineInputBorder(
-                      borderRadius: AppBorderRadius.r12,
-                      borderSide: const BorderSide(color: AppColors.border)),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: AppBorderRadius.r12,
-                      borderSide: const BorderSide(color: AppColors.border)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: AppBorderRadius.r12,
-                      borderSide: const BorderSide(
-                          color: AppColors.primaryDark, width: 1.5)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(context.l10n.governorate, style: AppTextStyles.label(context)),
+          SizedBox(height: 6.h),
+          GestureDetector(
+            onTap: onPickGovernorate,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: AppBorderRadius.r12,
+                border: Border.all(
+                  color: selectedGovernorate != null ? AppColors.primaryDark : AppColors.border,
+                  width: selectedGovernorate != null ? 1.5 : 1,
                 ),
-                items: state.governorates
-                    .map((g) => DropdownMenuItem(
-                          value: g,
-                          child: Text(g.localizedName(isArabic),
-                              style: AppTextStyles.body(context)),
-                        ))
-                    .toList(),
-                onChanged: onGovernorateChanged,
-                validator: (v) =>
-                    v == null ? context.l10n.requiredField : null,
               ),
-              if (selectedGovernorate != null) ...[
-                SizedBox(height: 8.h),
-                Row(
-                  children: [
-                    const Icon(Icons.local_shipping_outlined,
-                        size: 16, color: AppColors.primaryDark),
-                    SizedBox(width: 6.w),
-                    Expanded(
-                      child: Text(
-                        '${context.l10n.shipping}: ${selectedGovernorate!.shippingCost.asPrice} ${context.l10n.currency}  •  ${context.l10n.deliveryIn(selectedGovernorate!.deliveryDays)}',
-                        style: AppTextStyles.bodySmall(context)
-                            .copyWith(color: AppColors.primaryDark),
+              child: Row(
+                children: [
+                  const Icon(Icons.location_city_outlined,
+                      size: 18, color: AppColors.textLight),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      selectedGovernorate?.localizedName(isArabic) ??
+                          context.l10n.selectGovernorate,
+                      style: AppTextStyles.body(context).copyWith(
+                        color: selectedGovernorate != null
+                            ? AppColors.textDark
+                            : AppColors.textLight,
                       ),
                     ),
-                  ],
+                  ),
+                  const Icon(Icons.keyboard_arrow_down_rounded,
+                      color: AppColors.textLight),
+                ],
+              ),
+            ),
+          ),
+          if (selectedGovernorate != null) ...[
+            SizedBox(height: 8.h),
+            Row(
+              children: [
+                const Icon(Icons.local_shipping_outlined,
+                    size: 16, color: AppColors.primaryDark),
+                SizedBox(width: 6.w),
+                Expanded(
+                  child: Text(
+                    '${context.l10n.shipping}: ${selectedGovernorate!.shippingCost.asPrice} ${context.l10n.currency}  •  ${context.l10n.deliveryIn(selectedGovernorate!.deliveryDays)}',
+                    style: AppTextStyles.bodySmall(context)
+                        .copyWith(color: AppColors.primaryDark),
+                  ),
                 ),
               ],
-              SizedBox(height: 12.h),
-              AppTextField(
-                label: context.l10n.city,
-                controller: cityCtrl,
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? context.l10n.requiredField
-                    : null,
-              ),
-              SizedBox(height: 12.h),
-              AppTextField(
-                label: context.l10n.street,
-                controller: streetCtrl,
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? context.l10n.requiredField
-                    : null,
-              ),
-              SizedBox(height: 12.h),
-              AppTextField(
-                  label: context.l10n.apartment, controller: aptCtrl),
-            ],
-          );
-        },
+            ),
+          ],
+          SizedBox(height: 12.h),
+          AppTextField(
+            label: context.l10n.city,
+            controller: cityCtrl,
+            focusNode: cityFocus,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(streetFocus),
+            validator: (v) => (v == null || v.trim().isEmpty)
+                ? context.l10n.requiredField
+                : null,
+          ),
+          SizedBox(height: 12.h),
+          AppTextField(
+            label: context.l10n.street,
+            controller: streetCtrl,
+            focusNode: streetFocus,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(aptFocus),
+            validator: (v) => (v == null || v.trim().isEmpty)
+                ? context.l10n.requiredField
+                : null,
+          ),
+          SizedBox(height: 12.h),
+          AppTextField(
+            label: context.l10n.apartment,
+            controller: aptCtrl,
+            focusNode: aptFocus,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(notesFocus),
+          ),
+        ],
       ),
     );
   }
@@ -456,36 +655,57 @@ class _DeliverySection extends StatelessWidget {
 // ── Date section ─────────────────────────────────────────────────────────────
 
 class _DateSection extends StatelessWidget {
-  const _DateSection({required this.date, required this.onTap});
+  const _DateSection({required this.date, required this.onTap, this.selectedGovernorate});
   final DateTime? date;
   final VoidCallback onTap;
+  final Governorate? selectedGovernorate;
 
   @override
   Widget build(BuildContext context) {
+    final earliestDate = selectedGovernorate != null
+        ? DateTime.now().add(Duration(days: selectedGovernorate!.deliveryDays))
+        : DateTime.now().add(const Duration(days: 1));
+    final hint = '${context.l10n.estimatedDelivery}: ${DateFormat('EEE, d MMM').format(earliestDate)}';
+
     return _Card(
       title: '${context.l10n.deliveryDate} *',
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: AppBorderRadius.r12,
-        child: Container(
-          padding: EdgeInsets.all(12.r),
-          decoration: BoxDecoration(
-              borderRadius: AppBorderRadius.r12,
-              border: Border.all(color: AppColors.border)),
-          child: Row(
-            children: [
-              const Icon(Icons.calendar_month_outlined,
-                  color: AppColors.primaryDark, size: 20),
-              SizedBox(width: 10.w),
-              Text(
-                date == null
-                    ? context.l10n.selectDate
-                    : DateFormat('EEE, d MMM yyyy').format(date!),
-                style: AppTextStyles.body(context),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: onTap,
+            borderRadius: AppBorderRadius.r12,
+            child: Container(
+              padding: EdgeInsets.all(12.r),
+              decoration: BoxDecoration(
+                  borderRadius: AppBorderRadius.r12,
+                  border: Border.all(color: AppColors.border)),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_month_outlined,
+                      color: AppColors.primaryDark, size: 20),
+                  SizedBox(width: 10.w),
+                  Text(
+                    date == null
+                        ? context.l10n.selectDate
+                        : DateFormat('EEE, d MMM yyyy').format(date!),
+                    style: AppTextStyles.body(context),
+                  ),
+                ],
               ),
+            ),
+          ),
+          SizedBox(height: 6.h),
+          Row(
+            children: [
+              const Icon(Icons.info_outline, size: 14, color: AppColors.textLight),
+              SizedBox(width: 4.w),
+              Text(hint,
+                  style: AppTextStyles.bodySmall(context)
+                      .copyWith(color: AppColors.textLight)),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
@@ -567,13 +787,16 @@ class _SummarySection extends StatelessWidget {
     required this.subtotal,
     required this.shipping,
     required this.governorate,
+    this.discount = 0,
   });
   final double subtotal;
   final double shipping;
   final Governorate? governorate;
+  final double discount;
 
   @override
   Widget build(BuildContext context) {
+    final total = (subtotal + shipping - discount).clamp(0, double.infinity);
     return _Card(
       title: context.l10n.orderSummary,
       child: Column(
@@ -588,12 +811,18 @@ class _SummarySection extends StatelessWidget {
                 ? '—'
                 : '${shipping.asPrice} ${context.l10n.currency}',
           ),
+          if (discount > 0) ...[
+            SizedBox(height: 6.h),
+            _row(context, context.l10n.discount,
+                '−${discount.asPrice} ${context.l10n.currency}',
+                color: AppColors.primaryDark),
+          ],
           Padding(
             padding: EdgeInsets.symmetric(vertical: 8.h),
             child: const Divider(height: 1, color: AppColors.border),
           ),
           _row(context, context.l10n.total,
-              '${(subtotal + shipping).asPrice} ${context.l10n.currency}',
+              '${total.asPrice} ${context.l10n.currency}',
               bold: true),
         ],
       ),
@@ -601,7 +830,7 @@ class _SummarySection extends StatelessWidget {
   }
 
   Widget _row(BuildContext context, String label, String value,
-      {bool bold = false}) {
+      {bool bold = false, Color? color}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -610,10 +839,137 @@ class _SummarySection extends StatelessWidget {
                 ? AppTextStyles.subtitle(context)
                 : AppTextStyles.label(context)),
         Text(value,
-            style: bold
+            style: (bold
                 ? AppTextStyles.price(context)
-                : AppTextStyles.body(context)),
+                : AppTextStyles.body(context))
+              .copyWith(color: color)),
       ],
+    );
+  }
+}
+
+// ── Coupon section ────────────────────────────────────────────────────────────
+
+class _CouponSection extends StatefulWidget {
+  const _CouponSection({required this.subtotal});
+  final double subtotal;
+
+  @override
+  State<_CouponSection> createState() => _CouponSectionState();
+}
+
+class _CouponSectionState extends State<_CouponSection> {
+  final _ctrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CouponCubit, CouponState>(
+      builder: (context, state) {
+        if (state.isApplied) {
+          return _Card(
+            title: context.l10n.couponCode,
+            child: Row(
+              children: [
+                const Icon(Icons.local_offer_rounded,
+                    color: AppColors.primaryDark, size: 20),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(state.coupon!.code,
+                          style: AppTextStyles.subtitle(context)
+                              .copyWith(color: AppColors.primaryDark)),
+                      Text(context.l10n.couponApplied,
+                          style: AppTextStyles.bodySmall(context)
+                              .copyWith(color: AppColors.primaryDark)),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.read<CouponCubit>().clear();
+                    _ctrl.clear();
+                  },
+                  child: Text(context.l10n.cancel,
+                      style: TextStyle(color: AppColors.error)),
+                ),
+              ],
+            ),
+          );
+        }
+        return _Card(
+          title: context.l10n.couponCode,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _ctrl,
+                      textCapitalization: TextCapitalization.characters,
+                      textInputAction: TextInputAction.done,
+                      decoration: InputDecoration(
+                        hintText: context.l10n.couponCode,
+                        hintStyle: AppTextStyles.body(context)
+                            .copyWith(color: AppColors.textLight),
+                        isDense: true,
+                        filled: true,
+                        fillColor: AppColors.scaffoldBg,
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 14.w, vertical: 12.h),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: AppColors.border),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: AppColors.border),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  ElevatedButton(
+                    onPressed: state.status == CouponStatus.loading
+                        ? null
+                        : () => context
+                            .read<CouponCubit>()
+                            .apply(_ctrl.text, widget.subtotal),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryDark,
+                      foregroundColor: AppColors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: state.status == CouponStatus.loading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                                color: AppColors.white, strokeWidth: 2))
+                        : Text(context.l10n.applyCoupon),
+                  ),
+                ],
+              ),
+              if (state.status == CouponStatus.invalid) ...[
+                SizedBox(height: 6.h),
+                Text(context.l10n.invalidCoupon,
+                    style: AppTextStyles.bodySmall(context)
+                        .copyWith(color: AppColors.error)),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

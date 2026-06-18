@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 import '../../../cart/data/model/cart_item.dart';
 import '../../../orders/data/model/order.dart';
 import '../../../orders/data/repo/orders_repository.dart';
@@ -48,6 +49,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
       addressParts.add(governorateName);
 
       final orderData = {
+        'client_ref': const Uuid().v4(),
         'status': 'pending',
         'subtotal': subtotal,
         'delivery_fee': shippingCost,

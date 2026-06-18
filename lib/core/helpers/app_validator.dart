@@ -16,8 +16,11 @@ class AppValidator {
 
   static String? validatePhone(String? value) {
     if (value == null || value.isEmpty) return 'Phone number is required';
-    final phoneRegex = RegExp(r'^\+?[0-9]{9,15}$');
-    if (!phoneRegex.hasMatch(value.trim())) return 'Enter a valid phone number';
+    final cleaned = value.trim().replaceAll(RegExp(r'\s+|-'), '');
+    final phoneRegex = RegExp(r'^(\+20|0020|0)?1[0125][0-9]{8}$');
+    if (!phoneRegex.hasMatch(cleaned)) {
+      return 'Enter a valid Egyptian mobile number (e.g. 01012345678)';
+    }
     return null;
   }
 
