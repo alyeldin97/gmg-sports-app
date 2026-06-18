@@ -71,11 +71,13 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> updateProfile({String? name, String? phone}) async {
+    emit(state.copyWith(status: AuthStatus.loading));
     try {
       final updated = await _repository.updateProfile(name: name, phone: phone);
       emit(state.copyWith(status: AuthStatus.authenticated, user: updated));
     } catch (e, st) {
       AppLogger.e(_tag, 'updateProfile failed', e, st);
+      emit(state.copyWith(status: AuthStatus.failure, errorMessage: e.toString()));
     }
   }
 
