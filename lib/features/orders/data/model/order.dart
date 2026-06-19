@@ -109,6 +109,7 @@ class Order extends Equatable {
   final OrderStatus status;
   final double subtotal;
   final double deliveryFee;
+  final double discount;
   final double total;
   final String paymentMethod; // cod | instapay
   final DateTime? deliveryDate;
@@ -127,6 +128,7 @@ class Order extends Equatable {
     required this.status,
     required this.subtotal,
     required this.deliveryFee,
+    this.discount = 0,
     required this.total,
     required this.paymentMethod,
     this.deliveryDate,
@@ -149,6 +151,7 @@ class Order extends Equatable {
         status: OrderStatus.fromString(j['status'] as String? ?? 'pending'),
         subtotal: (j['subtotal'] as num?)?.toDouble() ?? 0,
         deliveryFee: (j['delivery_fee'] as num?)?.toDouble() ?? 0,
+        discount: (j['discount'] as num?)?.toDouble() ?? 0,
         total: (j['total'] as num?)?.toDouble() ?? 0,
         paymentMethod: j['payment_method'] as String? ?? 'cod',
         deliveryDate: j['delivery_date'] != null ? DateTime.tryParse(j['delivery_date'] as String) : null,

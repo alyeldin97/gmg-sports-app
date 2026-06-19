@@ -5,10 +5,11 @@
 
 -- 1. Add new columns to orders (idempotent)
 ALTER TABLE public.orders
-  ADD COLUMN IF NOT EXISTS client_ref     uuid,
-  ADD COLUMN IF NOT EXISTS guest_email    text,
-  ADD COLUMN IF NOT EXISTS governorate_id uuid,
-  ADD COLUMN IF NOT EXISTS governorate_name text;
+  ADD COLUMN IF NOT EXISTS client_ref       uuid,
+  ADD COLUMN IF NOT EXISTS guest_email      text,
+  ADD COLUMN IF NOT EXISTS governorate_id   uuid,
+  ADD COLUMN IF NOT EXISTS governorate_name text,
+  ADD COLUMN IF NOT EXISTS discount         numeric(10,2) NOT NULL DEFAULT 0;
 
 -- 2. Create governorates / shipping-zones table
 CREATE TABLE IF NOT EXISTS public.governorates (
@@ -90,3 +91,60 @@ CREATE POLICY "order_history read" ON public.order_status_history
       )
     )
   );
+
+-- ============================================================================
+-- 8. Wishlists table
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.wishlists (
+  user_id    uuid NOT NULL REFERENCES auth.users (id) ON DELETE CASCADE,
+  product_id uuid NOT NULL REFERENCES public.products (id) ON DELETE CASCADE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, product_id)
+);
+
+ALTER TABLE public.wishlists ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "wishlists owner" ON public.wishlists;
+CREATE POLICY "wishlists owner" ON public.wishlists
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- ============================================================================
+-- 9. Coupons table
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.coupons (
+  id             uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  code           text NOT NULL UNIQUE,
+  discount_type  text NOT NULL DEFAULT 'percentage' CHECK (discount_type IN ('percentage', 'fixed')),
+  discount_value numeric(10,2) NOT NULL,
+  min_order_amount numeric(10,2),
+  max_uses       int,
+  used_count     int NOT NULL DEFAULT 0,
+  is_active      boolean NOT NULL DEFAULT true,
+  expires_at     timestamptz,
+  created_at     timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "coupons public read" ON public.coupons;
+CREATE POLICY "coupons public read" ON public.coupons
+  FOR SELECT USING (is_active = true);
+
+DROP POLICY IF EXISTS "coupons admin write" ON public.coupons;
+CREATE POLICY "coupons admin write" ON public.coupons
+  FOR ALL USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- ============================================================================
+-- 10. increment_coupon_used_count RPC (security definer bypasses RLS)
+-- ============================================================================
+CREATE OR REPLACE FUNCTION public.increment_coupon_used_count(coupon_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE public.coupons SET used_count = used_count + 1 WHERE id = coupon_id;
+END;
+$$;

@@ -32,6 +32,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     required String street,
     String? apartment,
     String? notes,
+    double discount = 0,
   }) async {
     if (state.deliveryDate == null) {
       emit(state.copyWith(
@@ -41,7 +42,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
     emit(state.copyWith(status: CheckoutStatus.placing));
     try {
       final subtotal = items.fold(0.0, (sum, i) => sum + i.subtotal);
-      final total = subtotal + shippingCost;
+      final total = (subtotal + shippingCost - discount).clamp(0, double.infinity);
 
       final addressParts = [street.trim()];
       if (apartment != null && apartment.trim().isNotEmpty) addressParts.add(apartment.trim());
@@ -53,6 +54,7 @@ class CheckoutCubit extends Cubit<CheckoutState> {
         'status': 'pending',
         'subtotal': subtotal,
         'delivery_fee': shippingCost,
+        'discount': discount,
         'total': total,
         'payment_method': state.paymentMethod,
         'delivery_date': state.deliveryDate!.toIso8601String().split('T').first,

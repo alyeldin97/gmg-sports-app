@@ -146,6 +146,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return;
     }
     final cart = context.read<CartCubit>().state;
+    final couponDiscount = context.read<CouponCubit>().state.discount;
     context.read<CheckoutCubit>().placeOrder(
           items: cart.items,
           email: _emailCtrl.text,
@@ -159,6 +160,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           street: _streetCtrl.text,
           apartment: _aptCtrl.text.isEmpty ? null : _aptCtrl.text,
           notes: _notesCtrl.text.isEmpty ? null : _notesCtrl.text,
+          discount: couponDiscount,
         );
   }
 

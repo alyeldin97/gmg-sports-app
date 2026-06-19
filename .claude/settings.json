@@ -10,7 +10,15 @@
       "Bash(git config *)",
       "Bash(gh api *)",
       "Bash(git init *)",
-      "Bash(git commit -q -m ' *)"
+      "Bash(git commit -q -m ' *)",
+      "Bash(git pull *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(netlify status *)",
+      "Bash(netlify login *)",
+      "Bash(netlify deploy *)",
+      "Bash(flutter build *)",
+      "Bash(flutter clean *)"
     ],
     "additionalDirectories": [
       "/Users/alyeldinmuhammad/Desktop/gmg_dashboard"
