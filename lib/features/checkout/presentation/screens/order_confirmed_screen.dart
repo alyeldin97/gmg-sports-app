@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/localization/l10n_extension.dart';
+import '../../../../core/services/meta_pixel_service.dart';
 import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
@@ -8,14 +9,29 @@ import '../../../layout/presentation/screens/layout_screen.dart';
 import '../../../orders/data/model/order.dart';
 import '../../../orders/presentation/screens/order_details_screen.dart';
 
-class OrderConfirmedScreen extends StatelessWidget {
+class OrderConfirmedScreen extends StatefulWidget {
   static const String routeName = '/order-confirmed';
   const OrderConfirmedScreen({super.key, required this.order});
 
   final Order order;
 
   @override
+  State<OrderConfirmedScreen> createState() => _OrderConfirmedScreenState();
+}
+
+class _OrderConfirmedScreenState extends State<OrderConfirmedScreen> {
+  @override
+  void initState() {
+    super.initState();
+    MetaPixelService.purchase(
+      orderId: widget.order.id,
+      value: widget.order.total,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final order = widget.order;
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(

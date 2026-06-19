@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/services/meta_pixel_service.dart';
 import '../../../products/data/model/product.dart';
 import '../../../products/data/model/product_variant.dart';
 import '../../data/local/cart_local_data_source.dart';
@@ -28,6 +29,11 @@ class CartCubit extends Cubit<CartState> {
       items.add(CartItem(product: product, variant: variant, quantity: quantity));
     }
     await _emitAndSave(items);
+    MetaPixelService.addToCart(
+      contentId: product.id,
+      contentName: product.name,
+      value: (variant?.price ?? product.price) * quantity,
+    );
   }
 
   Future<void> setQuantity(String cartKey, int quantity) async {

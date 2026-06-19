@@ -10,6 +10,7 @@ import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_network_image.dart';
+import '../../../../core/services/meta_pixel_service.dart';
 import '../../../auth/presentation/cubits/auth_cubit.dart';
 import '../../../cart/presentation/cubits/cart_cubit.dart';
 import '../../../wishlist/presentation/cubits/wishlist_cubit.dart';
@@ -43,6 +44,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         orElse: () => widget.product.variants.first,
       );
     }
+    MetaPixelService.viewContent(
+      contentId: widget.product.id,
+      contentName: widget.product.name,
+      value: widget.product.price,
+    );
   }
 
   @override

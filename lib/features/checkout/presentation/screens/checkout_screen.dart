@@ -9,6 +9,7 @@ import '../../../../core/styling/colors.dart';
 import '../../../../core/styling/text_styles.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/services/meta_pixel_service.dart';
 import '../../../address/presentation/cubits/address_cubit.dart';
 import '../../../app_settings/presentation/cubits/app_settings_cubit.dart';
 import '../../../auth/presentation/cubits/auth_cubit.dart';
@@ -63,6 +64,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _phoneCtrl.text = auth.user!.phone ?? '';
       context.read<AddressCubit>().load();
     }
+    final cart = context.read<CartCubit>().state;
+    MetaPixelService.initiateCheckout(
+      value: cart.subtotal,
+      numItems: cart.itemCount,
+    );
   }
 
   @override

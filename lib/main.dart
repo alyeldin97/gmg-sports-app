@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 import 'core/di/dependency_injection.dart';
 import 'core/localization/locale_cubit.dart';
+import 'core/services/meta_pixel_service.dart';
 import 'core/navigation/cubits/navigation_cubit.dart';
 import 'core/styling/colors.dart';
 import 'core/utils/configurations.dart';
@@ -72,6 +73,7 @@ class GmgApp extends StatelessWidget {
                   scaffoldBackgroundColor: AppColors.scaffoldBg,
                   useMaterial3: true,
                 ),
+                navigatorObservers: [MetaPixelObserver()],
                 onGenerateRoute: RouteGenerator.getRoute,
                 initialRoute: RouteGenerator.initialRoute,
               );
