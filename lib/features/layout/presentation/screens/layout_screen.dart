@@ -138,11 +138,14 @@ class _Tab extends StatelessWidget {
                     size: 24.r, color: selected ? AppColors.primaryDark : AppColors.textLight),
                 if (badge > 0)
                   Positioned(
-                    right: -6,
-                    top: -4,
+                    right: -7,
+                    top: -5,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                      decoration: const BoxDecoration(color: AppColors.ink, shape: BoxShape.circle),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.ink,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       child: Text(badge > 9 ? '9+' : '$badge',
                           style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w800, color: AppColors.primary)),
                     ),

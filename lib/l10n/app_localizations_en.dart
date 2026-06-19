@@ -362,82 +362,104 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileUpdated => 'Profile updated';
 
   @override
-  String get cancelOrder => 'Cancel Order';
-
-  @override
   String get yes => 'Yes';
 
   @override
   String get no => 'No';
 
   @override
-  String get noCollections => 'No collections yet';
-
-  @override
-  String get clearCartConfirm => 'Remove all items from your cart?';
-
-  @override
-  String get cancelOrderConfirm => 'Are you sure you want to cancel this order?';
-
-  @override
-  String get cancelledSuccessfully => 'Order cancelled successfully';
-
-  @override
-  String get deleteAddressConfirm => 'Delete this address?';
-
-  @override
-  String get addressDeleted => 'Address deleted';
-
-  @override
-  String get contactInfo => 'Contact Information';
-
-  @override
-  String get deliveryInfo => 'Delivery Information';
-
-  @override
-  String get firstName => 'First Name';
-
-  @override
-  String get lastName => 'Last Name';
-
-  @override
-  String get governorate => 'Governorate';
-
-  @override
-  String get selectGovernorate => 'Select governorate';
-
-  @override
-  String get shippingCost => 'Shipping';
-
-  @override
-  String get shippingUnavailable => 'Shipping not available to this governorate';
-
-  @override
-  String get useSavedAddress => 'Use saved address';
-
-  @override
-  String get requiredField => 'Required';
+  String get requiredField => 'This field is required';
 
   @override
   String get invalidEmail => 'Enter a valid email';
 
   @override
+  String get firstName => 'First name';
+
+  @override
+  String get lastName => 'Last name';
+
+  @override
+  String get governorate => 'Governorate';
+
+  @override
+  String get searchGovernorate => 'Search governorate';
+
+  @override
+  String get selectGovernorate => 'Please select a governorate';
+
+  @override
   String get shipping => 'Shipping';
 
   @override
-  String deliveryIn(int days) => 'Delivery in $days day${days == 1 ? '' : 's'}';
+  String get shippingCost => 'Shipping cost';
 
   @override
-  String onlyXLeft(int count) => 'Only $count left!';
+  String get shippingUnavailable =>
+      'Shipping not available to selected governorate';
 
   @override
-  String freeShippingProgress(Object amount) => 'Add $amount EGP more for free shipping!';
+  String get freeShipping => 'Free shipping';
 
   @override
-  String get freeShipping => 'Free shipping unlocked!';
+  String deliveryIn(Object days) {
+    return 'Delivery in $days days';
+  }
+
+  @override
+  String get deliveryInfo => 'Delivery info';
+
+  @override
+  String get estimatedDelivery => 'Estimated delivery';
+
+  @override
+  String get discount => 'Discount';
+
+  @override
+  String get couponCode => 'Coupon code';
+
+  @override
+  String get applyCoupon => 'Apply coupon';
+
+  @override
+  String get couponApplied => 'Coupon applied';
+
+  @override
+  String get invalidCoupon => 'Invalid or expired coupon';
+
+  @override
+  String get contactInfo => 'Contact info';
+
+  @override
+  String get useSavedAddress => 'Use saved address';
+
+  @override
+  String get clearCartConfirm => 'Are you sure you want to clear your cart?';
+
+  @override
+  String get deleteAddressConfirm =>
+      'Are you sure you want to delete this address?';
+
+  @override
+  String get addressDeleted => 'Address deleted';
+
+  @override
+  String get noCollections => 'No collections yet';
+
+  @override
+  String get myWishlist => 'My wishlist';
+
+  @override
+  String get loginToWishlist => 'Sign in to save to your wishlist';
+
+  @override
+  String get wishlistEmpty => 'Your wishlist is empty';
 
   @override
   String get youMightAlsoLike => 'You might also like';
+
+  @override
+  String get inStockOnly => 'In stock only';
 
   @override
   String get sortBy => 'Sort by';
@@ -446,47 +468,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sortNewest => 'Newest';
 
   @override
-  String get sortPriceLow => 'Price: Low to High';
+  String get sortPriceLow => 'Price: low to high';
 
   @override
-  String get sortPriceHigh => 'Price: High to Low';
+  String get sortPriceHigh => 'Price: high to low';
 
   @override
-  String get inStockOnly => 'In stock only';
+  String onlyXLeft(Object count) {
+    return 'Only $count left';
+  }
 
   @override
-  String get myWishlist => 'My Wishlist';
+  String freeShippingProgress(Object remaining) {
+    return 'Add $remaining more for free shipping';
+  }
 
   @override
-  String get addToWishlist => 'Save to wishlist';
+  String get cancelOrder => 'Cancel order';
 
   @override
-  String get removeFromWishlist => 'Remove from wishlist';
+  String get cancelOrderConfirm =>
+      'Are you sure you want to cancel this order?';
 
   @override
-  String get wishlistEmpty => 'Your wishlist is empty';
-
-  @override
-  String get loginToWishlist => 'Sign in to save items to your wishlist';
-
-  @override
-  String get couponCode => 'Coupon code';
-
-  @override
-  String get applyCoupon => 'Apply';
-
-  @override
-  String get couponApplied => 'Coupon applied!';
-
-  @override
-  String get invalidCoupon => 'Invalid or expired coupon code';
-
-  @override
-  String get discount => 'Discount';
-
-  @override
-  String get estimatedDelivery => 'Estimated delivery';
-
-  @override
-  String get searchGovernorate => 'Search governorate…';
+  String get cancelledSuccessfully => 'Order cancelled successfully';
 }

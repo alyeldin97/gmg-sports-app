@@ -20,12 +20,23 @@ class SupabaseOrdersDataSource implements OrdersDataSource {
     final inserted =
         await _client.from('orders').insert(data).select().single();
     final orderId = inserted['id'] as String;
+    List<dynamic> insertedItems = [];
     if (items.isNotEmpty) {
-      await _client
+      insertedItems = await _client
           .from('order_items')
-          .insert(items.map((i) => {...i, 'order_id': orderId}).toList());
+          .insert(items.map((i) => {...i, 'order_id': orderId}).toList())
+          .select();
     }
-    return getOrderById(orderId);
+    // Authenticated users: fetch full order (includes history from trigger).
+    if (uid != null) return getOrderById(orderId);
+    // Guest users have no SELECT permission — build the Order from insert data.
+    return Order.fromJson({
+      ...inserted,
+      'order_items': insertedItems,
+      'order_status_history': [
+        {'status': inserted['status'] ?? 'pending', 'created_at': inserted['created_at']},
+      ],
+    });
   }
 
   @override

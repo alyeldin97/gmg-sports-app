@@ -17,7 +17,7 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit(this._homeRepository, this._productsRepository, this._collectionsRepository)
       : super(const HomeState());
 
-  Future<void> load() async {
+  Future<void> load({bool autoRetry = true}) async {
     emit(state.copyWith(status: HomeStatus.loading));
     try {
       final results = await Future.wait([
@@ -32,6 +32,10 @@ class HomeCubit extends Cubit<HomeState> {
         collections: results[2] as List<Collection>,
       ));
     } catch (e) {
+      if (autoRetry && !isClosed) {
+        await Future.delayed(const Duration(seconds: 2));
+        if (!isClosed) return load(autoRetry: false);
+      }
       emit(state.copyWith(status: HomeStatus.failure, errorMessage: e.toString()));
     }
   }

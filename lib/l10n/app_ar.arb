@@ -128,5 +128,56 @@
   "arabic": "العربية",
   "guestUser": "زائر",
   "guestPrompt": "سجّل الدخول لمزامنة سلتك وتتبع طلباتك.",
-  "profileUpdated": "تم تحديث الملف الشخصي"
+  "profileUpdated": "تم تحديث الملف الشخصي",
+
+  "yes": "نعم",
+  "no": "لا",
+  "requiredField": "هذا الحقل مطلوب",
+  "invalidEmail": "أدخل بريداً إلكترونياً صحيحاً",
+  "firstName": "الاسم الأول",
+  "lastName": "اسم العائلة",
+
+  "governorate": "المحافظة",
+  "searchGovernorate": "ابحث عن محافظة",
+  "selectGovernorate": "الرجاء اختيار المحافظة",
+  "shipping": "الشحن",
+  "shippingCost": "تكلفة الشحن",
+  "shippingUnavailable": "الشحن غير متاح للمحافظة المختارة",
+  "freeShipping": "شحن مجاني",
+  "deliveryIn": "التوصيل خلال {days} أيام",
+  "@deliveryIn": { "placeholders": { "days": {} } },
+  "deliveryInfo": "معلومات التوصيل",
+  "estimatedDelivery": "الموعد المتوقع للتوصيل",
+
+  "discount": "الخصم",
+  "couponCode": "كود الخصم",
+  "applyCoupon": "تطبيق الكوبون",
+  "couponApplied": "تم تطبيق الكوبون",
+  "invalidCoupon": "كوبون غير صالح أو منتهي الصلاحية",
+
+  "contactInfo": "بيانات التواصل",
+  "useSavedAddress": "استخدام عنوان محفوظ",
+  "clearCartConfirm": "هل أنت متأكد من إفراغ السلة؟",
+  "deleteAddressConfirm": "هل أنت متأكد من حذف هذا العنوان؟",
+  "addressDeleted": "تم حذف العنوان",
+
+  "noCollections": "لا توجد مجموعات بعد",
+  "myWishlist": "قائمة أمنياتي",
+  "loginToWishlist": "سجّل الدخول لحفظ المنتجات في قائمة أمنياتك",
+  "wishlistEmpty": "قائمة أمنياتك فارغة",
+
+  "youMightAlsoLike": "قد يعجبك أيضاً",
+  "inStockOnly": "المتوفر فقط",
+  "sortBy": "ترتيب حسب",
+  "sortNewest": "الأحدث",
+  "sortPriceLow": "السعر: من الأقل للأعلى",
+  "sortPriceHigh": "السعر: من الأعلى للأقل",
+  "onlyXLeft": "لم يتبق سوى {count}",
+  "@onlyXLeft": { "placeholders": { "count": {} } },
+  "freeShippingProgress": "أضف {remaining} أخرى للحصول على شحن مجاني",
+  "@freeShippingProgress": { "placeholders": { "remaining": {} } },
+
+  "cancelOrder": "إلغاء الطلب",
+  "cancelOrderConfirm": "هل أنت متأكد من إلغاء هذا الطلب؟",
+  "cancelledSuccessfully": "تم إلغاء الطلب بنجاح"
 }

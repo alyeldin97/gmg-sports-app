@@ -788,52 +788,6 @@ abstract class AppLocalizations {
   /// **'Profile updated'**
   String get profileUpdated;
 
-  /// No description provided for @cancelOrder.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel Order'**
-  String get cancelOrder;
-  String get noCollections;
-  String get clearCartConfirm;
-  String get cancelOrderConfirm;
-  String get cancelledSuccessfully;
-  String get deleteAddressConfirm;
-  String get addressDeleted;
-  String get contactInfo;
-  String get deliveryInfo;
-  String get firstName;
-  String get lastName;
-  String get governorate;
-  String get selectGovernorate;
-  String get shippingCost;
-  String get shippingUnavailable;
-  String get useSavedAddress;
-  String get requiredField;
-  String get invalidEmail;
-  String get shipping;
-  String deliveryIn(int days);
-  String onlyXLeft(int count);
-  String freeShippingProgress(Object amount);
-  String get freeShipping;
-  String get youMightAlsoLike;
-  String get sortBy;
-  String get sortNewest;
-  String get sortPriceLow;
-  String get sortPriceHigh;
-  String get inStockOnly;
-  String get myWishlist;
-  String get addToWishlist;
-  String get removeFromWishlist;
-  String get wishlistEmpty;
-  String get loginToWishlist;
-  String get couponCode;
-  String get applyCoupon;
-  String get couponApplied;
-  String get invalidCoupon;
-  String get discount;
-  String get estimatedDelivery;
-  String get searchGovernorate;
-
   /// No description provided for @yes.
   ///
   /// In en, this message translates to:
@@ -845,6 +799,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No'**
   String get no;
+
+  /// No description provided for @requiredField.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get requiredField;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email'**
+  String get invalidEmail;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get firstName;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get lastName;
+
+  /// No description provided for @governorate.
+  ///
+  /// In en, this message translates to:
+  /// **'Governorate'**
+  String get governorate;
+
+  /// No description provided for @searchGovernorate.
+  ///
+  /// In en, this message translates to:
+  /// **'Search governorate'**
+  String get searchGovernorate;
+
+  /// No description provided for @selectGovernorate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a governorate'**
+  String get selectGovernorate;
+
+  /// No description provided for @shipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping'**
+  String get shipping;
+
+  /// No description provided for @shippingCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping cost'**
+  String get shippingCost;
+
+  /// No description provided for @shippingUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping not available to selected governorate'**
+  String get shippingUnavailable;
+
+  /// No description provided for @freeShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Free shipping'**
+  String get freeShipping;
+
+  /// No description provided for @deliveryIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery in {days} days'**
+  String deliveryIn(Object days);
+
+  /// No description provided for @deliveryInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery info'**
+  String get deliveryInfo;
+
+  /// No description provided for @estimatedDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated delivery'**
+  String get estimatedDelivery;
+
+  /// No description provided for @discount.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get discount;
+
+  /// No description provided for @couponCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon code'**
+  String get couponCode;
+
+  /// No description provided for @applyCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply coupon'**
+  String get applyCoupon;
+
+  /// No description provided for @couponApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon applied'**
+  String get couponApplied;
+
+  /// No description provided for @invalidCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or expired coupon'**
+  String get invalidCoupon;
+
+  /// No description provided for @contactInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact info'**
+  String get contactInfo;
+
+  /// No description provided for @useSavedAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Use saved address'**
+  String get useSavedAddress;
+
+  /// No description provided for @clearCartConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear your cart?'**
+  String get clearCartConfirm;
+
+  /// No description provided for @deleteAddressConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this address?'**
+  String get deleteAddressConfirm;
+
+  /// No description provided for @addressDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Address deleted'**
+  String get addressDeleted;
+
+  /// No description provided for @noCollections.
+  ///
+  /// In en, this message translates to:
+  /// **'No collections yet'**
+  String get noCollections;
+
+  /// No description provided for @myWishlist.
+  ///
+  /// In en, this message translates to:
+  /// **'My wishlist'**
+  String get myWishlist;
+
+  /// No description provided for @loginToWishlist.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to save to your wishlist'**
+  String get loginToWishlist;
+
+  /// No description provided for @wishlistEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your wishlist is empty'**
+  String get wishlistEmpty;
+
+  /// No description provided for @youMightAlsoLike.
+  ///
+  /// In en, this message translates to:
+  /// **'You might also like'**
+  String get youMightAlsoLike;
+
+  /// No description provided for @inStockOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'In stock only'**
+  String get inStockOnly;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// No description provided for @sortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get sortNewest;
+
+  /// No description provided for @sortPriceLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: low to high'**
+  String get sortPriceLow;
+
+  /// No description provided for @sortPriceHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: high to low'**
+  String get sortPriceHigh;
+
+  /// No description provided for @onlyXLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {count} left'**
+  String onlyXLeft(Object count);
+
+  /// No description provided for @freeShippingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {remaining} more for free shipping'**
+  String freeShippingProgress(Object remaining);
+
+  /// No description provided for @cancelOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel order'**
+  String get cancelOrder;
+
+  /// No description provided for @cancelOrderConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel this order?'**
+  String get cancelOrderConfirm;
+
+  /// No description provided for @cancelledSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order cancelled successfully'**
+  String get cancelledSuccessfully;
 }
 
 class _AppLocalizationsDelegate

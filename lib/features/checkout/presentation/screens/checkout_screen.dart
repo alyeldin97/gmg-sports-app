@@ -451,7 +451,7 @@ class _GovernoratePickerSheetState extends State<_GovernoratePickerSheet> {
         : widget.governorates
             .where((g) =>
                 g.name.toLowerCase().contains(_query) ||
-                g.nameAr.toLowerCase().contains(_query))
+                (g.nameAr ?? '').toLowerCase().contains(_query))
             .toList();
 
     return DraggableScrollableSheet(

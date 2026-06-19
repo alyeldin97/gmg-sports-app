@@ -360,82 +360,102 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profileUpdated => 'تم تحديث الملف الشخصي';
 
   @override
-  String get cancelOrder => 'إلغاء الطلب';
-
-  @override
   String get yes => 'نعم';
 
   @override
   String get no => 'لا';
 
   @override
-  String get noCollections => 'لا توجد مجموعات بعد';
+  String get requiredField => 'هذا الحقل مطلوب';
 
   @override
-  String get clearCartConfirm => 'إزالة جميع المنتجات من السلة؟';
-
-  @override
-  String get cancelOrderConfirm => 'هل أنت متأكد من إلغاء هذا الطلب؟';
-
-  @override
-  String get cancelledSuccessfully => 'تم إلغاء الطلب بنجاح';
-
-  @override
-  String get deleteAddressConfirm => 'حذف هذا العنوان؟';
-
-  @override
-  String get addressDeleted => 'تم حذف العنوان';
-
-  @override
-  String get contactInfo => 'معلومات التواصل';
-
-  @override
-  String get deliveryInfo => 'معلومات التوصيل';
+  String get invalidEmail => 'أدخل بريداً إلكترونياً صحيحاً';
 
   @override
   String get firstName => 'الاسم الأول';
 
   @override
-  String get lastName => 'الاسم الأخير';
+  String get lastName => 'اسم العائلة';
 
   @override
   String get governorate => 'المحافظة';
 
   @override
-  String get selectGovernorate => 'اختر المحافظة';
+  String get searchGovernorate => 'ابحث عن محافظة';
 
   @override
-  String get shippingCost => 'الشحن';
-
-  @override
-  String get shippingUnavailable => 'الشحن غير متاح لهذه المحافظة';
-
-  @override
-  String get useSavedAddress => 'استخدام عنوان محفوظ';
-
-  @override
-  String get requiredField => 'مطلوب';
-
-  @override
-  String get invalidEmail => 'أدخل بريدًا إلكترونيًا صحيحًا';
+  String get selectGovernorate => 'الرجاء اختيار المحافظة';
 
   @override
   String get shipping => 'الشحن';
 
   @override
-  String deliveryIn(int days) => 'التوصيل خلال $days ${days == 1 ? 'يوم' : 'أيام'}';
+  String get shippingCost => 'تكلفة الشحن';
 
   @override
-  String onlyXLeft(int count) => 'متبقي $count فقط!';
+  String get shippingUnavailable => 'الشحن غير متاح للمحافظة المختارة';
 
   @override
-  String freeShippingProgress(Object amount) => 'أضف $amount جنيه للحصول على شحن مجاني!';
+  String get freeShipping => 'شحن مجاني';
 
   @override
-  String get freeShipping => 'تهانينا! شحن مجاني!';
+  String deliveryIn(Object days) {
+    return 'التوصيل خلال $days أيام';
+  }
 
   @override
-  String get youMightAlsoLike => 'قد يعجبك أيضًا';
+  String get deliveryInfo => 'معلومات التوصيل';
+
+  @override
+  String get estimatedDelivery => 'الموعد المتوقع للتوصيل';
+
+  @override
+  String get discount => 'الخصم';
+
+  @override
+  String get couponCode => 'كود الخصم';
+
+  @override
+  String get applyCoupon => 'تطبيق الكوبون';
+
+  @override
+  String get couponApplied => 'تم تطبيق الكوبون';
+
+  @override
+  String get invalidCoupon => 'كوبون غير صالح أو منتهي الصلاحية';
+
+  @override
+  String get contactInfo => 'بيانات التواصل';
+
+  @override
+  String get useSavedAddress => 'استخدام عنوان محفوظ';
+
+  @override
+  String get clearCartConfirm => 'هل أنت متأكد من إفراغ السلة؟';
+
+  @override
+  String get deleteAddressConfirm => 'هل أنت متأكد من حذف هذا العنوان؟';
+
+  @override
+  String get addressDeleted => 'تم حذف العنوان';
+
+  @override
+  String get noCollections => 'لا توجد مجموعات بعد';
+
+  @override
+  String get myWishlist => 'قائمة أمنياتي';
+
+  @override
+  String get loginToWishlist => 'سجّل الدخول لحفظ المنتجات في قائمة أمنياتك';
+
+  @override
+  String get wishlistEmpty => 'قائمة أمنياتك فارغة';
+
+  @override
+  String get youMightAlsoLike => 'قد يعجبك أيضاً';
+
+  @override
+  String get inStockOnly => 'المتوفر فقط';
 
   @override
   String get sortBy => 'ترتيب حسب';
@@ -444,47 +464,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sortNewest => 'الأحدث';
 
   @override
-  String get sortPriceLow => 'السعر: من الأقل';
+  String get sortPriceLow => 'السعر: من الأقل للأعلى';
 
   @override
-  String get sortPriceHigh => 'السعر: من الأعلى';
+  String get sortPriceHigh => 'السعر: من الأعلى للأقل';
 
   @override
-  String get inStockOnly => 'المتوفر فقط';
+  String onlyXLeft(Object count) {
+    return 'لم يتبق سوى $count';
+  }
 
   @override
-  String get myWishlist => 'قائمة المفضلة';
+  String freeShippingProgress(Object remaining) {
+    return 'أضف $remaining أخرى للحصول على شحن مجاني';
+  }
 
   @override
-  String get addToWishlist => 'حفظ في المفضلة';
+  String get cancelOrder => 'إلغاء الطلب';
 
   @override
-  String get removeFromWishlist => 'إزالة من المفضلة';
+  String get cancelOrderConfirm => 'هل أنت متأكد من إلغاء هذا الطلب؟';
 
   @override
-  String get wishlistEmpty => 'قائمة المفضلة فارغة';
-
-  @override
-  String get loginToWishlist => 'سجّل دخولك لحفظ المنتجات في المفضلة';
-
-  @override
-  String get couponCode => 'كود الخصم';
-
-  @override
-  String get applyCoupon => 'تطبيق';
-
-  @override
-  String get couponApplied => 'تم تطبيق الكوبون!';
-
-  @override
-  String get invalidCoupon => 'كود خصم غير صحيح أو منتهي الصلاحية';
-
-  @override
-  String get discount => 'خصم';
-
-  @override
-  String get estimatedDelivery => 'موعد التسليم المتوقع';
-
-  @override
-  String get searchGovernorate => 'ابحث عن المحافظة…';
+  String get cancelledSuccessfully => 'تم إلغاء الطلب بنجاح';
 }

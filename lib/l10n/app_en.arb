@@ -128,5 +128,56 @@
   "arabic": "العربية",
   "guestUser": "Guest",
   "guestPrompt": "Sign in to sync your cart and track orders.",
-  "profileUpdated": "Profile updated"
+  "profileUpdated": "Profile updated",
+
+  "yes": "Yes",
+  "no": "No",
+  "requiredField": "This field is required",
+  "invalidEmail": "Enter a valid email",
+  "firstName": "First name",
+  "lastName": "Last name",
+
+  "governorate": "Governorate",
+  "searchGovernorate": "Search governorate",
+  "selectGovernorate": "Please select a governorate",
+  "shipping": "Shipping",
+  "shippingCost": "Shipping cost",
+  "shippingUnavailable": "Shipping not available to selected governorate",
+  "freeShipping": "Free shipping",
+  "deliveryIn": "Delivery in {days} days",
+  "@deliveryIn": { "placeholders": { "days": {} } },
+  "deliveryInfo": "Delivery info",
+  "estimatedDelivery": "Estimated delivery",
+
+  "discount": "Discount",
+  "couponCode": "Coupon code",
+  "applyCoupon": "Apply coupon",
+  "couponApplied": "Coupon applied",
+  "invalidCoupon": "Invalid or expired coupon",
+
+  "contactInfo": "Contact info",
+  "useSavedAddress": "Use saved address",
+  "clearCartConfirm": "Are you sure you want to clear your cart?",
+  "deleteAddressConfirm": "Are you sure you want to delete this address?",
+  "addressDeleted": "Address deleted",
+
+  "noCollections": "No collections yet",
+  "myWishlist": "My wishlist",
+  "loginToWishlist": "Sign in to save to your wishlist",
+  "wishlistEmpty": "Your wishlist is empty",
+
+  "youMightAlsoLike": "You might also like",
+  "inStockOnly": "In stock only",
+  "sortBy": "Sort by",
+  "sortNewest": "Newest",
+  "sortPriceLow": "Price: low to high",
+  "sortPriceHigh": "Price: high to low",
+  "onlyXLeft": "Only {count} left",
+  "@onlyXLeft": { "placeholders": { "count": {} } },
+  "freeShippingProgress": "Add {remaining} more for free shipping",
+  "@freeShippingProgress": { "placeholders": { "remaining": {} } },
+
+  "cancelOrder": "Cancel order",
+  "cancelOrderConfirm": "Are you sure you want to cancel this order?",
+  "cancelledSuccessfully": "Order cancelled successfully"
 }
