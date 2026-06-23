@@ -76,7 +76,6 @@ class CheckoutCubit extends Cubit<CheckoutState> {
                 'unit_price': i.unitPrice,
                 'quantity': i.quantity,
                 'subtotal': i.subtotal,
-                'image_url': i.product.primaryImage,
               })
           .toList();
 
