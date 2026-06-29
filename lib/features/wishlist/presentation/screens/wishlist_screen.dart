@@ -70,7 +70,7 @@ class WishlistScreen extends StatelessWidget {
                   crossAxisCount: Responsive.gridCrossAxisCount(context),
                   mainAxisSpacing: 12.h,
                   crossAxisSpacing: 12.w,
-                  childAspectRatio: 0.66,
+                  childAspectRatio: 0.60,
                 ),
                 itemCount: state.products.length,
                 itemBuilder: (context, i) => ProductCard(product: state.products[i]),

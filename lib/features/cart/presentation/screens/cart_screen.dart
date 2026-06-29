@@ -106,9 +106,15 @@ class _CartRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: AppBorderRadius.r12,
-            child: AppNetworkImage(url: item.product.primaryImage, width: 72.w, height: 72.w),
+          GestureDetector(
+            onTap: () {
+              final img = item.product.primaryImage;
+              if (img != null && img.isNotEmpty) showImageViewer(context, img);
+            },
+            child: ClipRRect(
+              borderRadius: AppBorderRadius.r12,
+              child: AppNetworkImage(url: item.product.primaryImage, width: 72.w, height: 72.w),
+            ),
           ),
           SizedBox(width: 12.w),
           Expanded(

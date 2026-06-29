@@ -78,7 +78,7 @@ class HomeScreen extends StatelessWidget {
                         crossAxisCount: Responsive.gridCrossAxisCount(context),
                         mainAxisSpacing: 12.h,
                         crossAxisSpacing: 12.w,
-                        childAspectRatio: 0.66,
+                        childAspectRatio: 0.60,
                       ),
                       delegate: SliverChildBuilderDelegate(
                         (context, i) => ProductCard(product: state.featured[i]),

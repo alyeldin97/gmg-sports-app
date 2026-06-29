@@ -236,7 +236,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         crossAxisCount: Responsive.gridCrossAxisCount(context),
                         mainAxisSpacing: 12.h,
                         crossAxisSpacing: 12.w,
-                        childAspectRatio: 0.66,
+                        childAspectRatio: 0.60,
                       ),
                       itemCount: filtered.length,
                       itemBuilder: (context, i) => ProductCard(product: filtered[i]),

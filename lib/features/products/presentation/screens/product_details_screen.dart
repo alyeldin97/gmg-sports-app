@@ -90,12 +90,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final description = p.localizedDescription(isArabic);
     final images = p.images.isNotEmpty ? p.images : <String>[];
 
+    // Responsive image height: 42% of screen height, clamped for small/large screens
+    final screenH = MediaQuery.sizeOf(context).height;
+    final imageH = (screenH * 0.42).clamp(260.0, 420.0);
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 340.h,
+            expandedHeight: imageH,
             pinned: true,
             backgroundColor: AppColors.white,
             iconTheme: const IconThemeData(color: AppColors.ink),
@@ -118,20 +122,37 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
+                fit: StackFit.expand,
                 children: [
+                  // ── Image gallery ──────────────────────────────────────────
                   if (images.length > 1)
                     PageView.builder(
                       controller: _pageController,
                       itemCount: images.length,
                       onPageChanged: (i) => setState(() => _imageIndex = i),
-                      itemBuilder: (_, i) => InteractiveViewer(
-                        child: AppNetworkImage(url: images[i], fit: BoxFit.cover),
+                      itemBuilder: (_, i) => GestureDetector(
+                        onTap: () => showImageGallery(context, images, i),
+                        child: Hero(
+                          tag: 'product_image_${p.id}_$i',
+                          child: AppNetworkImage(url: images[i], fit: BoxFit.contain),
+                        ),
                       ),
                     )
                   else
-                    InteractiveViewer(
-                      child: AppNetworkImage(url: p.primaryImage, fit: BoxFit.cover),
+                    GestureDetector(
+                      onTap: () {
+                        final img = p.primaryImage;
+                        if (img != null && img.isNotEmpty) {
+                          showImageViewer(context, img);
+                        }
+                      },
+                      child: Hero(
+                        tag: 'product_image_${p.id}_0',
+                        child: AppNetworkImage(url: p.primaryImage, fit: BoxFit.contain),
+                      ),
                     ),
+
+                  // ── Dot indicator ──────────────────────────────────────────
                   if (images.length > 1)
                     Positioned(
                       bottom: 12,
@@ -156,6 +177,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         }),
                       ),
                     ),
+
+                  // ── Expand hint icon ───────────────────────────────────────
+                  Positioned(
+                    bottom: images.length > 1 ? 32 : 12,
+                    right: 12,
+                    child: GestureDetector(
+                      onTap: () {
+                        if (images.isNotEmpty) {
+                          showImageGallery(context, images.isNotEmpty ? images : [p.primaryImage ?? ''], _imageIndex);
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.black45,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.open_in_full_rounded,
+                            color: Colors.white, size: 16),
+                      ),
+                    ),
+                  ),
+
+                  // ── Discount badge ─────────────────────────────────────────
                   if (p.hasDiscount)
                     Positioned(
                       top: 12,
@@ -353,13 +398,13 @@ class _RecommendationsSection extends StatelessWidget {
               Text(context.l10n.youMightAlsoLike, style: AppTextStyles.heading3(context)),
               SizedBox(height: 10.h),
               SizedBox(
-                height: 220.h,
+                height: 265.h,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: recs.length,
                   separatorBuilder: (_, __) => SizedBox(width: 10.w),
                   itemBuilder: (context, i) => SizedBox(
-                    width: 140.w,
+                    width: 155.w,
                     child: ProductCard(product: recs[i]),
                   ),
                 ),
